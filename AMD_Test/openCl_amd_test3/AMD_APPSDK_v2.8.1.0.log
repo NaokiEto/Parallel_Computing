@@ -1,0 +1,15 @@
+1 )Starting Installation of AMD APPSDK v2.8.1.0 .... 
+2 )64-bit Operating System Found.. 
+3 )Version Information Available in VersionInfo.txt 
+4 )Untar command executed succesfully, The SDK package available
+5 )Untar command executed succesfully, The ICD package available 
+6 )SDK Binaries/Source/Samples/Other files copying to  = /opt/AMDAPP 
+7 )SDK files copied successfully at /opt/AMDAPP/
+8 )Copying the OpenCL runtime files to System...  
+9 )Updating Environment variables... 
+10 )Updating LD_LIBRARY_PATH in /etc/profile
+11 )Environment variables updated successfully
+12 )Initialize global environment variables... 
+13 )Global environment variables Initialized
+14 )AMD APP installation Completed
+15 )Reboot required to reflect the changes
