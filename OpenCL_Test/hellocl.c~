@@ -1,4 +1,10 @@
 /* Simple Hello World for OpenCL, written in C.
+ * For real code, check for errors. The error code is stored in all calls here,
+ * but no checking is done, which is certainly bad. It'll likely simply crash
+ * right after a failing call.
+ *
+ * On GNU/Linux with nVidia OpenCL, program builds with -lOpenCL.
+ * Not sure about other platforms.
  */
 
 #include <stdio.h>
