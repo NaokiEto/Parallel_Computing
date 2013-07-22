@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: (^|/)((lex|png|j|z|t|D|Q|verdict).*|vtk[^.]*\.([^t]|t[^x]|tx[^x]|cxx|hxx)|vtk[^.]*([^t]|[^i]t|[^c]it|[^i]cit|[^l]icit|[^p]licit|[^m]plicit|[^I]mplicit)\.txx)$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lakers/Downloads/VTK/Utilities/vtkalglib/ap.cpp
+
+/home/lakers/Downloads/VTK/Utilities/vtkalglib/bdsvd.cpp
+
+/home/lakers/Downloads/VTK/Utilities/vtkalglib/bidiagonal.cpp
+
+/home/lakers/Downloads/VTK/Utilities/vtkalglib/blas.cpp
+
+/home/lakers/Downloads/VTK/Utilities/vtkalglib/lq.cpp
+
+/home/lakers/Downloads/VTK/Utilities/vtkalglib/qr.cpp
+
+/home/lakers/Downloads/VTK/Utilities/vtkalglib/reflections.cpp
+
+/home/lakers/Downloads/VTK/Utilities/vtkalglib/rotations.cpp
+
+/home/lakers/Downloads/VTK/Utilities/vtkalglib/svd.cpp
+

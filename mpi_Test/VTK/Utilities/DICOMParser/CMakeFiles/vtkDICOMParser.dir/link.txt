@@ -1,0 +1,1 @@
+/usr/bin/mpiCC  -fPIC   -Wno-deprecated -O3 -DNDEBUG    -shared -Wl,-soname,libvtkDICOMParser.so.5.8 -o ../../bin/libvtkDICOMParser.so.5.8.0 CMakeFiles/vtkDICOMParser.dir/DICOMFile.cxx.o CMakeFiles/vtkDICOMParser.dir/DICOMParser.cxx.o CMakeFiles/vtkDICOMParser.dir/DICOMAppHelper.cxx.o 

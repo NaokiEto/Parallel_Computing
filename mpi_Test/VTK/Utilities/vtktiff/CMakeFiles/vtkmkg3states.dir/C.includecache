@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^(tif|fax|port|uv|vtk|tconf|t4|mk|z).*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lakers/Downloads/VTK/Utilities/vtktiff/mkg3states.c
+tif_config.h
+/home/lakers/Downloads/VTK/Utilities/vtktiff/tif_config.h
+tif_fax3.h
+/home/lakers/Downloads/VTK/Utilities/vtktiff/tif_fax3.h
+
+/home/lakers/Downloads/VTK/Utilities/vtktiff/tif_config.h
+
+/home/lakers/Downloads/VTK/Utilities/vtktiff/tif_fax3.h
+tiff.h
+/home/lakers/Downloads/VTK/Utilities/vtktiff/tiff.h
+
+/home/lakers/Downloads/VTK/Utilities/vtktiff/tiff.h
+vtk_tiff_mangle.h
+/home/lakers/Downloads/VTK/Utilities/vtktiff/vtk_tiff_mangle.h
+tiffconf.h
+/home/lakers/Downloads/VTK/Utilities/vtktiff/tiffconf.h
+
+/home/lakers/Downloads/VTK/Utilities/vtktiff/tiffconf.h
+
+/home/lakers/Downloads/VTK/Utilities/vtktiff/vtk_tiff_mangle.h
+

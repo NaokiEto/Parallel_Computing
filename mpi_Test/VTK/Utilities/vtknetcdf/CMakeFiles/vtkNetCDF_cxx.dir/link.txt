@@ -1,0 +1,1 @@
+/usr/bin/mpiCC  -fPIC   -w -w -O3 -DNDEBUG    -shared -Wl,-soname,libvtkNetCDF_cxx.so -o ../../bin/libvtkNetCDF_cxx.so CMakeFiles/vtkNetCDF_cxx.dir/netcdf.cpp.o CMakeFiles/vtkNetCDF_cxx.dir/ncvalues.cpp.o ../../bin/libvtkNetCDF.so.5.8.0 -Wl,-rpath,/home/lakers/Downloads/VTK/bin: 

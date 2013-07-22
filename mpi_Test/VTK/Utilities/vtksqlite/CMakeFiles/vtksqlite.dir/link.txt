@@ -1,0 +1,1 @@
+/usr/bin/mpicc  -fPIC   -O3 -DNDEBUG    -shared -Wl,-soname,libvtksqlite.so.5.8 -o ../../bin/libvtksqlite.so.5.8.0 CMakeFiles/vtksqlite.dir/vtk_sqlite3.c.o -lpthread 

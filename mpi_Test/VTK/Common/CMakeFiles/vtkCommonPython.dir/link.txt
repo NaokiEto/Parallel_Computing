@@ -1,0 +1,1 @@
+/usr/bin/mpiCC  -fPIC   -Wno-deprecated -O3 -DNDEBUG    -shared -Wl,-soname,vtkCommonPython.so -o ../bin/vtkCommonPython.so CMakeFiles/vtkCommonPython.dir/vtkCommonPythonInit.cxx.o ../bin/libvtkCommonPythonD.so.5.8.0 ../bin/libvtkPythonCore.so.5.8.0 ../bin/libvtkCommon.so.5.8.0 ../bin/libvtksys.so.5.8.0 -ldl -lm 
