@@ -4,7 +4,7 @@
 
 void process(vtkMultiProcessController* controller, void* vtkNotUsed(arg)) 
 {
-    system("http://127.0.0.1/Toggle_git/vtkOBJ/build/ThreejsExampleVTK.html"); 
+    system("google-chrome http://127.0.0.1/Toggle_git/vtkOBJ/build/ThreejsExampleVTK.html"); 
     int myId = controller->GetLocalProcessId(); 
 
     std::cout << "My process id is "; 
