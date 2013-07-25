@@ -2,6 +2,8 @@ import vtk
 import sys, os, string
  
 input = str(sys.argv[1])
+
+print input
  
 # Prepare to read the file
  
