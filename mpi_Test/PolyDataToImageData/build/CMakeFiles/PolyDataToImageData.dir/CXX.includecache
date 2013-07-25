@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/lakers/Documents/PolyDataToImageData2/PolyDataToImageData.cxx
+/home/lakers/Documents/Parallel_Computing/mpi_Test/PolyDataToImageData/PolyDataToImageData.cxx
 vtkVersion.h
 -
 vtkSmartPointer.h

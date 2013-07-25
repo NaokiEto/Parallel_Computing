@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/lakers/Documents/PolyDataToImageData2/PolyDataToImageData.cxx" "/home/lakers/Documents/PolyDataToImageData2/build/CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o"
+  "/home/lakers/Documents/Parallel_Computing/mpi_Test/PolyDataToImageData/PolyDataToImageData.cxx" "/home/lakers/Documents/Parallel_Computing/mpi_Test/PolyDataToImageData/build/CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

@@ -1,1 +1,0 @@
-/home/lakers/Documents/PolyDataToImageData2/build/CMakeFiles/PolyDataToImageData.dir

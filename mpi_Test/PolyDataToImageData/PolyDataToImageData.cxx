@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 
   vtkSmartPointer<vtkMetaImageWriter> writer = 
     vtkSmartPointer<vtkMetaImageWriter>::New();
-  writer->SetFileName("SphereVolume.mhd");
+  writer->SetFileName(argv[2]);
 #if VTK_MAJOR_VERSION <= 5
   writer->SetInput(imgstenc->GetOutput());
 #else

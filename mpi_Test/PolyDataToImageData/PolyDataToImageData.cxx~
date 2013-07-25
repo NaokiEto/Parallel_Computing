@@ -1,14 +1,12 @@
 #include <vtkVersion.h>
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
-#include <vtkPolyDataReader.h>
 #include <vtkImageData.h>
 #include <vtkSphereSource.h>
 #include <vtkMetaImageWriter.h>
 #include <vtkPolyDataToImageStencil.h>
 #include <vtkImageStencil.h>
 #include <vtkPointData.h>
-#include <string.h>
 
 /**
  * This program generates a sphere (closed surface, vtkPolyData) and converts it into volume
@@ -16,30 +14,20 @@
  * 0. Internally vtkPolyDataToImageStencil is utilized. The resultant image is saved to disk 
  * in metaimage file format (SphereVolume.mhd).
  */
-int main(int argc, char *argv[])
+int main(int, char *[])
 {  
-    char input[11];
-
-    input[0] = 't';
-    input[1] = 'r';
-    input[2] = 'y';
-    input[3] = 't';
-    input[4] = 'r';
-    input[5] = 'y';
-    input[6] = '1';
-    input[7] = '.';
-    input[8] = 'v';
-    input[9] = 't';
-    input[10] = 'k';
-
-    vtkPolyDataReader *reader = vtkPolyDataReader::New(); 
-    reader->SetFileName(argv[1]);
-    reader->Update();
+  vtkSmartPointer<vtkSphereSource> sphereSource = 
+    vtkSmartPointer<vtkSphereSource>::New();  
+  sphereSource->SetRadius(20);
+  sphereSource->SetPhiResolution(30);
+  sphereSource->SetThetaResolution(30);
+  vtkSmartPointer<vtkPolyData> pd = sphereSource->GetOutput();
+  sphereSource->Update();
 
   vtkSmartPointer<vtkImageData> whiteImage = 
     vtkSmartPointer<vtkImageData>::New();    
   double bounds[6];
-  reader->GetOutput()->GetBounds(bounds);
+  pd->GetBounds(bounds);
   double spacing[3]; // desired volume spacing
   spacing[0] = 0.5;
   spacing[1] = 0.5;
@@ -80,9 +68,9 @@ int main(int argc, char *argv[])
   vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = 
     vtkSmartPointer<vtkPolyDataToImageStencil>::New();
 #if VTK_MAJOR_VERSION <= 5
-  pol2stenc->SetInput(reader->GetOutput());
+  pol2stenc->SetInput(pd);
 #else
-  pol2stenc->SetInputData(reader->GetOutput());
+  pol2stenc->SetInputData(pd);
 #endif
   pol2stenc->SetOutputOrigin(origin);
   pol2stenc->SetOutputSpacing(spacing);
