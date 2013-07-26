@@ -11,4 +11,4 @@ ElementSpacing = 0.5 0.5 0.5
 DimSize = 20 20 20
 AnatomicalOrientation = ???
 ElementType = MET_UCHAR
-ElementDataFile = thereWeGo.zraw
+ElementDataFile = tada.zraw

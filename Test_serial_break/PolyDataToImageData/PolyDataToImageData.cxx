@@ -21,52 +21,231 @@
  */
 int main(int argc, char *argv[])
 {
+    static int size;
 
-    int rank, size;
+    int rank;
+
+    MPI_Status status;
 
     MPI_Init (&argc, &argv);
 
-    /*DETERMINE RANK OF THIS PROCESSOR*/
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank); 
-
     /*DETERMINE TOTAL NUMBER OF PROCESSORS*/
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    /*DETERMINE RANK OF THIS PROCESSOR*/
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    printf("This is the size, %d\n", size); 
+    printf("This is the rank, %d\n", rank);
 
     vtkPolyDataReader *reader = vtkPolyDataReader::New(); 
     reader->SetFileName(argv[1]);
     reader->Update();
 
-    vtkSmartPointer<vtkImageData> whiteImage = 
-    vtkSmartPointer<vtkImageData>::New();    
-    double bounds[6];
-    bounds[0] = 0;
-    bounds[1] = 10;
-    bounds[2] = 0;
-    bounds[3] = 10;
-    bounds[4] = 0;
-    bounds[5] = 10;
+    vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    
 
     //reader->GetOutput()->GetBounds(bounds);
+    reader->Update();
     double spacing[3]; // desired volume spacing
-    spacing[0] = 0.5;
-    spacing[1] = 0.5;
-    spacing[2] = 0.5;
+    spacing[0] = 0.1;
+    spacing[1] = 0.1;
+    spacing[2] = 0.1;
     whiteImage->SetSpacing(spacing);
 
-    // compute dimensions
-    int dim[3];
-    for (int i = 0; i < 3; i++)
+    double bounds[6];
+    reader->Update();
+    if (rank == 0)
     {
-        dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
+        printf("Yay! rank 0 works! \n");
+        bounds[0] = -10;
+        bounds[1] = 0;
+        bounds[2] = -10;
+        bounds[3] = 0;
+        bounds[4] = 0;
+        bounds[5] = 10;
+
+        reader->Update();
+        // compute dimensions
+        int dim[3];
+        for (int i = 0; i < 3; i++)
+        {
+            dim[i] = static_cast<int>(ceil(bounds[i * 2 + 1] - bounds[i * 2] / spacing[i]));
+        }
+        whiteImage->SetDimensions(dim);
+        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
     }
-    whiteImage->SetDimensions(dim);
-    whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+
+    if (rank == 1)
+    {
+        printf("\nyay! rank 1 works! \n");
+        bounds[0] = 0;
+        bounds[1] = 10;
+        bounds[2] = -10;
+        bounds[3] = 0;
+        bounds[4] = 0;
+        bounds[5] = 10;
+        printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
+
+        reader->Update();
+        // compute dimensions
+        int dim[3];
+        for (int i = 0; i < 3; i++)
+        {
+            dim[i] = static_cast<int>(ceil(bounds[i * 2 + 1] - bounds[i * 2] / spacing[i]));
+        }
+        whiteImage->SetDimensions(dim);
+        whiteImage->SetExtent(dim[0], 2 * dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
+    }
+
+    if (rank == 2)
+    {
+        printf("\nyay! rank 2 works! \n");
+        bounds[0] = -10;
+        bounds[1] = 0;
+        bounds[2] = 0;
+        bounds[3] = 10;
+        bounds[4] = 0;
+        bounds[5] = 10;
+        printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
+
+        reader->Update();
+        // compute dimensions
+        int dim[3];
+        for (int i = 0; i < 3; i++)
+        {
+            dim[i] = static_cast<int>(ceil(bounds[i * 2 + 1] - bounds[i * 2] / spacing[i]));
+        }
+        whiteImage->SetDimensions(dim);
+        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
+    }
+
+    if (rank == 3)
+    {
+        printf("\nyay! rank 3 works! \n");
+        bounds[0] = 0;
+        bounds[1] = 10;
+        bounds[2] = 0;
+        bounds[3] = 10;
+        bounds[4] = 0;
+        bounds[5] = 10;
+        printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
+
+        reader->Update();
+        // compute dimensions
+        int dim[3];
+        for (int i = 0; i < 3; i++)
+        {
+            dim[i] = static_cast<int>(ceil(bounds[i * 2 + 1] - bounds[i * 2] / spacing[i]));
+        }
+        whiteImage->SetDimensions(dim);
+        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
+    }
+
+    if (rank == 4)
+    {
+        printf("\nyay! rank 4 works! \n");
+        bounds[0] = -10;
+        bounds[1] = 0;
+        bounds[2] = -10;
+        bounds[3] = 0;
+        bounds[4] = -10;
+        bounds[5] = 0;
+        printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
+
+        reader->Update();
+        // compute dimensions
+        int dim[3];
+        for (int i = 0; i < 3; i++)
+        {
+            dim[i] = static_cast<int>(ceil(bounds[i * 2 + 1] - bounds[i * 2] / spacing[i]));
+        }
+        whiteImage->SetDimensions(dim);
+        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
+    }
+
+    if (rank == 5)
+    {
+        printf("\nyay! rank 5 works! \n");
+        bounds[0] = 0;
+        bounds[1] = 10;
+        bounds[2] = -10;
+        bounds[3] = 0;
+        bounds[4] = -10;
+        bounds[5] = 0;
+        printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
+
+        reader->Update();
+        // compute dimensions
+        int dim[3];
+        for (int i = 0; i < 3; i++)
+        {
+            dim[i] = static_cast<int>(ceil(bounds[i * 2 + 1] - bounds[i * 2] / spacing[i]));
+        }
+        whiteImage->SetDimensions(dim);
+        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
+    }
+
+    if (rank == 6)
+    {
+        printf("\nyay! rank 6 works! \n");
+        bounds[0] = -10;
+        bounds[1] = 0;
+        bounds[2] = 0;
+        bounds[3] = 10;
+        bounds[4] = -10;
+        bounds[5] = 0;
+        printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
+
+        reader->Update();
+        // compute dimensions
+        int dim[3];
+        for (int i = 0; i < 3; i++)
+        {
+            dim[i] = static_cast<int>(ceil(bounds[i * 2 + 1] - bounds[i * 2] / spacing[i]));
+        }
+        whiteImage->SetDimensions(dim);
+        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
+    }
+
+    if (rank == 7)
+    {
+        printf("\nyay! rank 7 works! \n");
+        bounds[0] = 0;
+        bounds[1] = 10;
+        bounds[2] = 0;
+        bounds[3] = 10;
+        bounds[4] = -10;
+        bounds[5] = 0;
+        printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
+
+        reader->Update();
+        // compute dimensions
+        int dim[3];
+        for (int i = 0; i < 3; i++)
+        {
+            dim[i] = static_cast<int>(ceil(bounds[i * 2 + 1] - bounds[i * 2] / spacing[i]));
+        }
+        whiteImage->SetDimensions(dim);
+        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
+    }
 
     double origin[3];
-    origin[0] = bounds[0] + spacing[0] / 2;
-    origin[1] = bounds[2] + spacing[1] / 2;
-    origin[2] = bounds[4] + spacing[2] / 2;
+    origin[0] = bounds[0] + spacing[0]/10;
+    origin[1] = bounds[2] + spacing[1]/10;
+    origin[2] = bounds[4] + spacing[2]/10;
     whiteImage->SetOrigin(origin);
+
+    printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
+
+    reader->Update();
 
 #if VTK_MAJOR_VERSION <= 5
     whiteImage->SetScalarTypeToUnsignedChar();
@@ -83,8 +262,11 @@ int main(int argc, char *argv[])
         whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
     }
 
+    reader->Update();
+
     // polygonal data --> image stencil:
     vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
+    //pol2stenc->Update();
 #if VTK_MAJOR_VERSION <= 5
     pol2stenc->SetInput(reader->GetOutput());
 #else
@@ -97,6 +279,7 @@ int main(int argc, char *argv[])
 
     // cut the corresponding white image and set the background:
     vtkSmartPointer<vtkImageStencil> imgstenc = vtkSmartPointer<vtkImageStencil>::New();
+    //imgstenc->Update();
 #if VTK_MAJOR_VERSION <= 5
     imgstenc->SetInput(whiteImage);
     imgstenc->SetStencil(pol2stenc->GetOutput());
@@ -110,12 +293,14 @@ int main(int argc, char *argv[])
 
     vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
     writer->SetFileName(argv[2]);
+
 #if VTK_MAJOR_VERSION <= 5
     writer->SetInput(imgstenc->GetOutput());
 #else
     writer->SetInputData(imgstenc->GetOutput());
 #endif
     writer->Write();  
+    writer->Update();
 
     MPI_Finalize();    
 
