@@ -791,11 +791,11 @@ if rank == 6:
             writer.SetInputData(triangleCellNormals.GetOutputPort())
         writer.Write()
 
-if rank == 7:
+if rank == 4:
  
     os.chdir("PolyDataToImageData/build")
 
-    for files in glob.glob("YoloSwag7.mhd"):
+    for files in glob.glob("YoloSwag4.mhd"):
         print files
 
         input = str(files)
