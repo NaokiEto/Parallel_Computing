@@ -7,7 +7,7 @@ To convert vtk file to an mhd file (referencing a zraw file), we would go
 to the PolyDataToImageData/build directory, add in the vtk file, and then
 do the command
 
-sudo mpirun -np 5 ./PolyDataToImageData trytry1.vtk ../../boohoo2.mhd
+sudo mpirun -np 5 ./PolyDataToImageData trytry1.vtk
 
 This produces an mhd file and a zraw file in the Serial_Test directory.
 

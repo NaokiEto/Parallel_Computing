@@ -72,79 +72,6 @@ int main(int argc, char *argv[])
         bounds[3] = 0;
         bounds[4] = 0;
         bounds[5] = 10;
-
-        //reader->Update();
-        // compute dimensions
-        int dim[3];
-        for (int i = 0; i < 3; i++)
-        {
-            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2] )/ spacing[i]));
-        }
-        whiteImage->SetDimensions(dim);
-        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
-
-        double origin[3];
-            origin[0] = bounds[0] + spacing[0]/10;
-            origin[1] = bounds[2] + spacing[1]/10;
-            origin[2] = bounds[4] + spacing[2]/10;
-            whiteImage->SetOrigin(origin);
-
-            printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
-
-            //reader->Update();
-
-        #if VTK_MAJOR_VERSION <= 5
-            whiteImage->SetScalarTypeToUnsignedChar();
-            whiteImage->AllocateScalars();
-        #else
-            whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
-        #endif
-            // fill the image with foreground voxels:
-            unsigned char inval = 255;
-            unsigned char outval = 0;
-            vtkIdType count = whiteImage->GetNumberOfPoints();
-            for (vtkIdType i = 0; i < count; ++i)
-            {
-                whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-            }
-
-            //reader->Update();
-
-            // polygonal data --> image stencil:
-            vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-            //pol2stenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            pol2stenc->SetInput(reader->GetOutput());
-        #else
-            pol2stenc->SetInputData(reader->GetOutput());
-        #endif
-            pol2stenc->SetOutputOrigin(origin);
-            pol2stenc->SetOutputSpacing(spacing);
-            pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-            pol2stenc->Update();
-
-            //imgstenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            imgstenc->SetInput(whiteImage);
-            imgstenc->SetStencil(pol2stenc->GetOutput());
-        #else
-            imgstenc->SetInputData(whiteImage);
-            imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
-        #endif
-            imgstenc->ReverseStencilOff();
-            imgstenc->SetBackgroundValue(outval);
-            imgstenc->Update();
-
-            writer->SetFileName("YoloSwag0.mhd");
-
-        #if VTK_MAJOR_VERSION <= 5
-            writer->SetInput(imgstenc->GetOutput());
-        #else
-            writer->SetInputData(imgstenc->GetOutput());
-        #endif
-            writer->Write();  
-            writer->Update();
     }
 
     if (rank == 1)
@@ -158,79 +85,6 @@ int main(int argc, char *argv[])
         bounds[4] = 0;
         bounds[5] = 10;
         printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
-
-        //reader->Update();
-        // compute dimensions
-        int dim[3];
-        for (int i = 0; i < 3; i++)
-        {
-            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
-        }
-        whiteImage->SetDimensions(dim);
-        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
-
-        double origin[3];
-            origin[0] = bounds[0] + spacing[0]/10;
-            origin[1] = bounds[2] + spacing[1]/10;
-            origin[2] = bounds[4] + spacing[2]/10;
-            whiteImage->SetOrigin(origin);
-
-            printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
-
-            //reader->Update();
-
-        #if VTK_MAJOR_VERSION <= 5
-            whiteImage->SetScalarTypeToUnsignedChar();
-            whiteImage->AllocateScalars();
-        #else
-            whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
-        #endif
-            // fill the image with foreground voxels:
-            unsigned char inval = 255;
-            unsigned char outval = 0;
-            vtkIdType count = whiteImage->GetNumberOfPoints();
-            for (vtkIdType i = 0; i < count; ++i)
-            {
-                whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-            }
-
-            //reader->Update();
-
-            // polygonal data --> image stencil:
-            vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-            //pol2stenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            pol2stenc->SetInput(reader->GetOutput());
-        #else
-            pol2stenc->SetInputData(reader->GetOutput());
-        #endif
-            pol2stenc->SetOutputOrigin(origin);
-            pol2stenc->SetOutputSpacing(spacing);
-            pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-            pol2stenc->Update();
-
-            //imgstenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            imgstenc->SetInput(whiteImage);
-            imgstenc->SetStencil(pol2stenc->GetOutput());
-        #else
-            imgstenc->SetInputData(whiteImage);
-            imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
-        #endif
-            imgstenc->ReverseStencilOff();
-            imgstenc->SetBackgroundValue(outval);
-            imgstenc->Update();
-
-            writer->SetFileName("YoloSwag1.mhd");
-
-        #if VTK_MAJOR_VERSION <= 5
-            writer->SetInput(imgstenc->GetOutput());
-        #else
-            writer->SetInputData(imgstenc->GetOutput());
-        #endif
-            writer->Write();  
-            writer->Update();
     }
 
     if (rank == 2)
@@ -244,79 +98,6 @@ int main(int argc, char *argv[])
         bounds[4] = 0;
         bounds[5] = 10;
         printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
-
-        //reader->Update();
-        // compute dimensions
-        int dim[3];
-        for (int i = 0; i < 3; i++)
-        {
-            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
-        }
-        whiteImage->SetDimensions(dim);
-        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
-
-        double origin[3];
-            origin[0] = bounds[0] + spacing[0]/10;
-            origin[1] = bounds[2] + spacing[1]/10;
-            origin[2] = bounds[4] + spacing[2]/10;
-            whiteImage->SetOrigin(origin);
-
-            printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
-
-            //reader->Update();
-
-        #if VTK_MAJOR_VERSION <= 5
-            whiteImage->SetScalarTypeToUnsignedChar();
-            whiteImage->AllocateScalars();
-        #else
-            whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
-        #endif
-            // fill the image with foreground voxels:
-            unsigned char inval = 255;
-            unsigned char outval = 0;
-            vtkIdType count = whiteImage->GetNumberOfPoints();
-            for (vtkIdType i = 0; i < count; ++i)
-            {
-                whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-            }
-
-            //reader->Update();
-
-            // polygonal data --> image stencil:
-            vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-            //pol2stenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            pol2stenc->SetInput(reader->GetOutput());
-        #else
-            pol2stenc->SetInputData(reader->GetOutput());
-        #endif
-            pol2stenc->SetOutputOrigin(origin);
-            pol2stenc->SetOutputSpacing(spacing);
-            pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-            pol2stenc->Update();
-
-            //imgstenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            imgstenc->SetInput(whiteImage);
-            imgstenc->SetStencil(pol2stenc->GetOutput());
-        #else
-            imgstenc->SetInputData(whiteImage);
-            imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
-        #endif
-            imgstenc->ReverseStencilOff();
-            imgstenc->SetBackgroundValue(outval);
-            imgstenc->Update();
-
-            writer->SetFileName("YoloSwag2.mhd");
-
-        #if VTK_MAJOR_VERSION <= 5
-            writer->SetInput(imgstenc->GetOutput());
-        #else
-            writer->SetInputData(imgstenc->GetOutput());
-        #endif
-            writer->Write();  
-            writer->Update();
     }
 
     if (rank == 3)
@@ -330,79 +111,6 @@ int main(int argc, char *argv[])
         bounds[4] = 0;
         bounds[5] = 10;
         printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
-
-        //reader->Update();
-        // compute dimensions
-        int dim[3];
-        for (int i = 0; i < 3; i++)
-        {
-            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
-        }
-        whiteImage->SetDimensions(dim);
-        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
-
-        double origin[3];
-            origin[0] = bounds[0] + spacing[0]/10;
-            origin[1] = bounds[2] + spacing[1]/10;
-            origin[2] = bounds[4] + spacing[2]/10;
-            whiteImage->SetOrigin(origin);
-
-            printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
-
-            //reader->Update();
-
-        #if VTK_MAJOR_VERSION <= 5
-            whiteImage->SetScalarTypeToUnsignedChar();
-            whiteImage->AllocateScalars();
-        #else
-            whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
-        #endif
-            // fill the image with foreground voxels:
-            unsigned char inval = 255;
-            unsigned char outval = 0;
-            vtkIdType count = whiteImage->GetNumberOfPoints();
-            for (vtkIdType i = 0; i < count; ++i)
-            {
-                whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-            }
-
-            //reader->Update();
-
-            // polygonal data --> image stencil:
-            vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-            //pol2stenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            pol2stenc->SetInput(reader->GetOutput());
-        #else
-            pol2stenc->SetInputData(reader->GetOutput());
-        #endif
-            pol2stenc->SetOutputOrigin(origin);
-            pol2stenc->SetOutputSpacing(spacing);
-            pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-            pol2stenc->Update();
-
-            //imgstenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            imgstenc->SetInput(whiteImage);
-            imgstenc->SetStencil(pol2stenc->GetOutput());
-        #else
-            imgstenc->SetInputData(whiteImage);
-            imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
-        #endif
-            imgstenc->ReverseStencilOff();
-            imgstenc->SetBackgroundValue(outval);
-            imgstenc->Update();
-
-            writer->SetFileName("YoloSwag3.mhd");
-
-        #if VTK_MAJOR_VERSION <= 5
-            writer->SetInput(imgstenc->GetOutput());
-        #else
-            writer->SetInputData(imgstenc->GetOutput());
-        #endif
-            writer->Write();  
-            writer->Update();
     }
 
     if (rank == 4)
@@ -416,79 +124,6 @@ int main(int argc, char *argv[])
         bounds[4] = -10;
         bounds[5] = 0;
         printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
-
-        //reader->Update();
-        // compute dimensions
-        int dim[3];
-        for (int i = 0; i < 3; i++)
-        {
-            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
-        }
-        whiteImage->SetDimensions(dim);
-        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
-
-        double origin[3];
-            origin[0] = bounds[0] + spacing[0]/10;
-            origin[1] = bounds[2] + spacing[1]/10;
-            origin[2] = bounds[4] + spacing[2]/10;
-            whiteImage->SetOrigin(origin);
-
-            printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
-
-            //reader->Update();
-
-        #if VTK_MAJOR_VERSION <= 5
-            whiteImage->SetScalarTypeToUnsignedChar();
-            whiteImage->AllocateScalars();
-        #else
-            whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
-        #endif
-            // fill the image with foreground voxels:
-            unsigned char inval = 255;
-            unsigned char outval = 0;
-            vtkIdType count = whiteImage->GetNumberOfPoints();
-            for (vtkIdType i = 0; i < count; ++i)
-            {
-                whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-            }
-
-            //reader->Update();
-
-            // polygonal data --> image stencil:
-            vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-            //pol2stenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            pol2stenc->SetInput(reader->GetOutput());
-        #else
-            pol2stenc->SetInputData(reader->GetOutput());
-        #endif
-            pol2stenc->SetOutputOrigin(origin);
-            pol2stenc->SetOutputSpacing(spacing);
-            pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-            pol2stenc->Update();
-
-            //imgstenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            imgstenc->SetInput(whiteImage);
-            imgstenc->SetStencil(pol2stenc->GetOutput());
-        #else
-            imgstenc->SetInputData(whiteImage);
-            imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
-        #endif
-            imgstenc->ReverseStencilOff();
-            imgstenc->SetBackgroundValue(outval);
-            imgstenc->Update();
-
-            writer->SetFileName("YoloSwag4.mhd");
-
-        #if VTK_MAJOR_VERSION <= 5
-            writer->SetInput(imgstenc->GetOutput());
-        #else
-            writer->SetInputData(imgstenc->GetOutput());
-        #endif
-            writer->Write();  
-            writer->Update();
     }
 
     if (rank == 5)
@@ -502,79 +137,6 @@ int main(int argc, char *argv[])
         bounds[4] = -10;
         bounds[5] = 0;
         printf("This is one of the bounds : %f, %f, %f, %f \n", bounds[0], bounds[1], bounds[2], bounds[3]);
-
-        //reader->Update();
-        // compute dimensions
-        int dim[3];
-        for (int i = 0; i < 3; i++)
-        {
-            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
-        }
-        whiteImage->SetDimensions(dim);
-        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
-
-        double origin[3];
-            origin[0] = bounds[0] + spacing[0]/10;
-            origin[1] = bounds[2] + spacing[1]/10;
-            origin[2] = bounds[4] + spacing[2]/10;
-            whiteImage->SetOrigin(origin);
-
-            printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
-
-            //reader->Update();
-
-        #if VTK_MAJOR_VERSION <= 5
-            whiteImage->SetScalarTypeToUnsignedChar();
-            whiteImage->AllocateScalars();
-        #else
-            whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
-        #endif
-            // fill the image with foreground voxels:
-            unsigned char inval = 255;
-            unsigned char outval = 0;
-            vtkIdType count = whiteImage->GetNumberOfPoints();
-            for (vtkIdType i = 0; i < count; ++i)
-            {
-                whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-            }
-
-            //reader->Update();
-
-            // polygonal data --> image stencil:
-            vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-            //pol2stenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            pol2stenc->SetInput(reader->GetOutput());
-        #else
-            pol2stenc->SetInputData(reader->GetOutput());
-        #endif
-            pol2stenc->SetOutputOrigin(origin);
-            pol2stenc->SetOutputSpacing(spacing);
-            pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-            pol2stenc->Update();
-
-            //imgstenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            imgstenc->SetInput(whiteImage);
-            imgstenc->SetStencil(pol2stenc->GetOutput());
-        #else
-            imgstenc->SetInputData(whiteImage);
-            imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
-        #endif
-            imgstenc->ReverseStencilOff();
-            imgstenc->SetBackgroundValue(outval);
-            imgstenc->Update();
-
-            writer->SetFileName("YoloSwag5.mhd");
-
-        #if VTK_MAJOR_VERSION <= 5
-            writer->SetInput(imgstenc->GetOutput());
-        #else
-            writer->SetInputData(imgstenc->GetOutput());
-        #endif
-            writer->Write();  
-            writer->Update();
     }
 
     if (rank == 6)
@@ -588,79 +150,6 @@ int main(int argc, char *argv[])
         bounds[4] = -10;
         bounds[5] = 0;
         printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
-
-        //reader->Update();
-        // compute dimensions
-        int dim[3];
-        for (int i = 0; i < 3; i++)
-        {
-            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
-        }
-        whiteImage->SetDimensions(dim);
-        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
-
-        double origin[3];
-            origin[0] = bounds[0] + spacing[0]/10;
-            origin[1] = bounds[2] + spacing[1]/10;
-            origin[2] = bounds[4] + spacing[2]/10;
-            whiteImage->SetOrigin(origin);
-
-            printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
-
-            //reader->Update();
-
-        #if VTK_MAJOR_VERSION <= 5
-            whiteImage->SetScalarTypeToUnsignedChar();
-            whiteImage->AllocateScalars();
-        #else
-            whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
-        #endif
-            // fill the image with foreground voxels:
-            unsigned char inval = 255;
-            unsigned char outval = 0;
-            vtkIdType count = whiteImage->GetNumberOfPoints();
-            for (vtkIdType i = 0; i < count; ++i)
-            {
-                whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-            }
-
-            //reader->Update();
-
-            // polygonal data --> image stencil:
-            vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-            //pol2stenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            pol2stenc->SetInput(reader->GetOutput());
-        #else
-            pol2stenc->SetInputData(reader->GetOutput());
-        #endif
-            pol2stenc->SetOutputOrigin(origin);
-            pol2stenc->SetOutputSpacing(spacing);
-            pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-            pol2stenc->Update();
-
-            //imgstenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            imgstenc->SetInput(whiteImage);
-            imgstenc->SetStencil(pol2stenc->GetOutput());
-        #else
-            imgstenc->SetInputData(whiteImage);
-            imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
-        #endif
-            imgstenc->ReverseStencilOff();
-            imgstenc->SetBackgroundValue(outval);
-            imgstenc->Update();
-
-            writer->SetFileName("YoloSwag6.mhd");
-
-        #if VTK_MAJOR_VERSION <= 5
-            writer->SetInput(imgstenc->GetOutput());
-        #else
-            writer->SetInputData(imgstenc->GetOutput());
-        #endif
-            writer->Write();  
-            writer->Update();
     }
 
     if (rank == 7)
@@ -674,80 +163,87 @@ int main(int argc, char *argv[])
         bounds[4] = -10;
         bounds[5] = 0;
         printf("This is one of the bounds : %f, %f \n", bounds[0], bounds[1]);
+    }
+    //reader->Update();
+    // compute dimensions
+    int dim[3];
+    for (int i = 0; i < 3; i++)
+    {
+        dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
+    }
+    whiteImage->SetDimensions(dim);
+    whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+    printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
+
+    double origin[3];
+        origin[0] = bounds[0] + spacing[0]/10;
+        origin[1] = bounds[2] + spacing[1]/10;
+        origin[2] = bounds[4] + spacing[2]/10;
+        whiteImage->SetOrigin(origin);
+
+        printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
 
         //reader->Update();
-        // compute dimensions
-        int dim[3];
-        for (int i = 0; i < 3; i++)
+
+    #if VTK_MAJOR_VERSION <= 5
+        whiteImage->SetScalarTypeToUnsignedChar();
+        whiteImage->AllocateScalars();
+    #else
+        whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
+    #endif
+        // fill the image with foreground voxels:
+        unsigned char inval = 255;
+        unsigned char outval = 0;
+        vtkIdType count = whiteImage->GetNumberOfPoints();
+        for (vtkIdType i = 0; i < count; ++i)
         {
-            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
+            whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
         }
-        whiteImage->SetDimensions(dim);
-        whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
 
-        double origin[3];
-            origin[0] = bounds[0] + spacing[0]/10;
-            origin[1] = bounds[2] + spacing[1]/10;
-            origin[2] = bounds[4] + spacing[2]/10;
-            whiteImage->SetOrigin(origin);
+        //reader->Update();
 
-            printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
+        // polygonal data --> image stencil:
+        vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
+        //pol2stenc->Update();
+    #if VTK_MAJOR_VERSION <= 5
+        pol2stenc->SetInput(reader->GetOutput());
+    #else
+        pol2stenc->SetInputData(reader->GetOutput());
+    #endif
+        pol2stenc->SetOutputOrigin(origin);
+        pol2stenc->SetOutputSpacing(spacing);
+        pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
+        pol2stenc->Update();
 
-            //reader->Update();
+        //imgstenc->Update();
+    #if VTK_MAJOR_VERSION <= 5
+        imgstenc->SetInput(whiteImage);
+        imgstenc->SetStencil(pol2stenc->GetOutput());
+    #else
+        imgstenc->SetInputData(whiteImage);
+        imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
+    #endif
+        imgstenc->ReverseStencilOff();
+        imgstenc->SetBackgroundValue(outval);
+        imgstenc->Update();
 
-        #if VTK_MAJOR_VERSION <= 5
-            whiteImage->SetScalarTypeToUnsignedChar();
-            whiteImage->AllocateScalars();
-        #else
-            whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
-        #endif
-            // fill the image with foreground voxels:
-            unsigned char inval = 255;
-            unsigned char outval = 0;
-            vtkIdType count = whiteImage->GetNumberOfPoints();
-            for (vtkIdType i = 0; i < count; ++i)
-            {
-                whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-            }
+        char str[80];
 
-            //reader->Update();
+        sprintf(str, "YoloSwag%d.mhd", rank);
+/*
+        std::string inputFilename = "YoloSwag";
+        std::string inputFilename2 = ".mhd"; 
+        std::string result = inputFilename + std::to_string(rank) + inputFilename2;
+*/
+        writer->SetFileName(str);
 
-            // polygonal data --> image stencil:
-            vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-            //pol2stenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            pol2stenc->SetInput(reader->GetOutput());
-        #else
-            pol2stenc->SetInputData(reader->GetOutput());
-        #endif
-            pol2stenc->SetOutputOrigin(origin);
-            pol2stenc->SetOutputSpacing(spacing);
-            pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-            pol2stenc->Update();
-
-            //imgstenc->Update();
-        #if VTK_MAJOR_VERSION <= 5
-            imgstenc->SetInput(whiteImage);
-            imgstenc->SetStencil(pol2stenc->GetOutput());
-        #else
-            imgstenc->SetInputData(whiteImage);
-            imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
-        #endif
-            imgstenc->ReverseStencilOff();
-            imgstenc->SetBackgroundValue(outval);
-            imgstenc->Update();
-
-            writer->SetFileName("YoloSwag7.mhd");
-
-        #if VTK_MAJOR_VERSION <= 5
-            writer->SetInput(imgstenc->GetOutput());
-        #else
-            writer->SetInputData(imgstenc->GetOutput());
-        #endif
-            writer->Write();  
-            writer->Update();
-    }
+    #if VTK_MAJOR_VERSION <= 5
+        writer->SetInput(imgstenc->GetOutput());
+    #else
+        writer->SetInputData(imgstenc->GetOutput());
+    #endif
+        writer->Write();  
+        writer->Update();
 
     MPI_Finalize();    
 
