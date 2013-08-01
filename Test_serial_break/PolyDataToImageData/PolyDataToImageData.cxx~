@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
         std::string inputFilename2 = ".mhd"; 
         std::string result = inputFilename + std::to_string(rank) + inputFilename2;
 */
-        writer->SetFileName(result);
+        writer->SetFileName(str);
 
     #if VTK_MAJOR_VERSION <= 5
         writer->SetInput(imgstenc->GetOutput());

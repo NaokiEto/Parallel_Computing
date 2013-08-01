@@ -230,11 +230,7 @@ int main(int argc, char *argv[])
         char str[80];
 
         sprintf(str, "YoloSwag%d.mhd", rank);
-/*
-        std::string inputFilename = "YoloSwag";
-        std::string inputFilename2 = ".mhd"; 
-        std::string result = inputFilename + std::to_string(rank) + inputFilename2;
-*/
+
         writer->SetFileName(str);
 
     #if VTK_MAJOR_VERSION <= 5
