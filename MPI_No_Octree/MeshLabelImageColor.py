@@ -1,7 +1,13 @@
 import vtk
 import numpy
 import glob, sys, os, string
+
+import mpi4py.rc
+mpi4py.rc.initialize = False
+
 from mpi4py import MPI
+
+MPI.Init()
 
 comm = MPI.COMM_WORLD
 size = comm.Get_size()
@@ -11,6 +17,8 @@ def parallel_mpi(n):
 
     # Go to this directory
     os.chdir("PolyDataToImageData/build")
+
+    print "Rank: ", n
 
     # Find the correct file
     for files in glob.glob("YoloSwag" + str(n) + ".mhd"):
@@ -30,9 +38,8 @@ def parallel_mpi(n):
 
         voi.Update()#necessary for GetScalarRange()
         srange= voi.GetOutput().GetScalarRange()#needs Update() before!
-        print "Range", srange
-         
-         
+        print "Range", srange        
+ 
         ##Prepare surface generation
         contour = vtk.vtkMarchingCubes() #for label images
 
@@ -113,7 +120,7 @@ def parallel_mpi(n):
         mapper.SetLookupTable(colorLookupTable)
 
         writer = vtk.vtkPolyDataWriter()
-        writer.SetFileName("../../ShrimpChowFun" + str(n) + ".vtk")
+        writer.SetFileName("../../ShrimpChowFun" + str(n - 1) + ".vtk")
 
         if vtk.VTK_MAJOR_VERSION <= 5:
             writer.SetInput(triangleCellNormals.GetOutput())
@@ -121,20 +128,23 @@ def parallel_mpi(n):
             writer.SetInputData(triangleCellNormals.GetOutputPort())
         writer.Write()
 
-parallel_mpi(rank)
+if rank >= 1:
+    parallel_mpi(rank)
+
+MPI.Request.waitall()
 
 if rank == 0:
 
     # Go to this directory
-    os.chdir("../../")
+    #os.chdir("../../")
 
     appendWriter = vtk.vtkAppendPolyData()
 
-    for i in range(size):
+    for i in range(size - 1):
         inputNum = vtk.vtkPolyData()
         reader = vtk.vtkPolyDataReader()
 
-        inputFileName = "ShrimpChowFun" + str(i) + ".vtk"
+        inputFileName = "../../ShrimpChowFun" + str(i) + ".vtk"
         reader.SetFileName(inputFileName)
         reader.Update()
         inputNum.ShallowCopy(reader.GetOutput())
@@ -182,3 +192,5 @@ if rank == 0:
     # Render and interact
     renderWindow.Render()
     renderWindowInteractor.Start()
+
+MPI.Finalize()
