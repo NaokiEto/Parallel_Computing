@@ -13,7 +13,7 @@ This produces an mhd file and a zraw file in the Serial_Test directory.
 
 Then, you can render output the vtk files by doing:
 
-sudo mpirun -np 2 python MeshLabelImageColor.py
+sudo mpirun -np 2 python MeshLabelImageColor.py AllTheShrimp.vtk
 
 
 
