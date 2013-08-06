@@ -1,3 +1,8 @@
+#include <unistd.h>
+#include <iostream>
+#include <dirent.h>
+#include <vector>
+
 #include <vtkVersion.h>
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
@@ -14,6 +19,28 @@
 #include <mpi.h>
 #include <stdio.h>
 
+std::vector<std::string> results;				// holds search results
+
+// recursive search algorithm
+void search(std::string curr_directory, std::string extension){
+	DIR* dir_point = opendir(curr_directory.c_str());
+	dirent* entry = readdir(dir_point);
+
+	while (entry){									// if !entry then end of directory
+
+		std::string fname = entry->d_name;	// filename
+											// if filename's last characters are extension
+		if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
+			results.push_back(fname);		// add filename to results vector
+
+		entry = readdir(dir_point);
+
+	}
+
+	return;
+
+}
+
 /**
  * This program generates a sphere (closed surface, vtkPolyData) and converts it into volume
  * representation (vtkImageData) where the foreground voxels are 1 and the background voxels are
@@ -22,6 +49,23 @@
  */
 int main(int argc, char *argv[])
 {
+
+    std::string extension;
+    extension = "vtk";
+
+	// setup search parameters
+	std::string curr_directory = get_current_dir_name();
+
+    //printf("
+
+	search(curr_directory, extension);
+
+    std::cout << "- \t" <<  results[0] << std::endl;
+
+    std::string result = results[0];
+
+	const char * c = result.c_str();
+
     static int size;
 
     int rank;
@@ -42,7 +86,7 @@ int main(int argc, char *argv[])
     if (rank >= 1)
     {
         vtkPolyDataReader *reader = vtkPolyDataReader::New(); 
-        reader->SetFileName(argv[1]);
+        reader->SetFileName(c);
         reader->Update();
 
         vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    

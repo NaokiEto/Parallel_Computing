@@ -1,0 +1,53 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1647026275/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1647026275.dir/build.make CMakeFiles/cmTryCompileExec1647026275.dir/build
+make[1]: Entering directory `/home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1647026275.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec1647026275.dir/CheckSymbolExists.c.o   -c /home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec1647026275
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1647026275.dir/link.txt --verbose=1
+/usr/bin/cc          CMakeFiles/cmTryCompileExec1647026275.dir/CheckSymbolExists.c.o  -o cmTryCompileExec1647026275 -rdynamic 
+CMakeFiles/cmTryCompileExec1647026275.dir/CheckSymbolExists.c.o:CheckSymbolExists.c:function main: error: undefined reference to 'pthread_create'
+collect2: ld returned 1 exit status
+make[1]: Leaving directory `/home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec1647026275] Error 1
+make: *** [cmTryCompileExec1647026275/fast] Error 2
+
+File /home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3954984319/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3954984319.dir/build.make CMakeFiles/cmTryCompileExec3954984319.dir/build
+make[1]: Entering directory `/home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3954984319.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec3954984319.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec3954984319
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3954984319.dir/link.txt --verbose=1
+/usr/bin/cc      -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec3954984319.dir/CheckFunctionExists.c.o  -o cmTryCompileExec3954984319 -rdynamic -lpthreads 
+/usr/bin/ld: error: cannot find -lpthreads
+CMakeFiles/cmTryCompileExec3954984319.dir/CheckFunctionExists.c.o:CheckFunctionExists.c:function main: error: undefined reference to 'pthread_create'
+collect2: ld returned 1 exit status
+make[1]: *** [cmTryCompileExec3954984319] Error 1
+make[1]: Leaving directory `/home/lakers/Documents/Parallel_Computing/pthread_Real/PolyDataToImageData/build/CMakeFiles/CMakeTmp'
+make: *** [cmTryCompileExec3954984319/fast] Error 2
+
+

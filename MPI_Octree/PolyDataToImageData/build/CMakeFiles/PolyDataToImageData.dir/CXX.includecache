@@ -7,6 +7,14 @@
 #IncludeRegexTransform: 
 
 /home/lakers/Documents/Parallel_Computing/MPI_Octree/PolyDataToImageData/PolyDataToImageData.cxx
+unistd.h
+-
+iostream
+-
+dirent.h
+-
+vector
+-
 vtkVersion.h
 -
 vtkSmartPointer.h
@@ -17,8 +25,6 @@ vtkPolyDataReader.h
 -
 vtkImageData.h
 -
-vtkSphereSource.h
--
 vtkMetaImageWriter.h
 -
 vtkPolyDataToImageStencil.h
@@ -28,10 +34,6 @@ vtkImageStencil.h
 vtkPointData.h
 -
 string.h
--
-vtkXMLPUnstructuredGridWriter.h
--
-vtkXMLPImageDataWriter.h
 -
 vtkPDataSetWriter.h
 -
@@ -350,12 +352,6 @@ vtkCellTypes.h
 vtkCellLinks.h
 /usr/include/vtk-5.8/vtkCellLinks.h
 
-/usr/include/vtk-5.8/vtkPolyDataAlgorithm.h
-vtkAlgorithm.h
-/usr/include/vtk-5.8/vtkAlgorithm.h
-vtkPolyData.h
-/usr/include/vtk-5.8/vtkPolyData.h
-
 /usr/include/vtk-5.8/vtkPolyDataMapper.h
 vtkMapper.h
 /usr/include/vtk-5.8/vtkMapper.h
@@ -391,10 +387,6 @@ vtkObjectBase.h
 /usr/include/vtk-5.8/vtkSortDataArray.h
 vtkObject.h
 /usr/include/vtk-5.8/vtkObject.h
-
-/usr/include/vtk-5.8/vtkSphereSource.h
-vtkPolyDataAlgorithm.h
-/usr/include/vtk-5.8/vtkPolyDataAlgorithm.h
 
 /usr/include/vtk-5.8/vtkStdString.h
 vtkSystemIncludes.h
@@ -501,30 +493,6 @@ windows.h
 -
 
 /usr/include/vtk-5.8/vtkWriter.h
-vtkAlgorithm.h
-/usr/include/vtk-5.8/vtkAlgorithm.h
-
-/usr/include/vtk-5.8/vtkXMLPDataWriter.h
-vtkXMLWriter.h
-/usr/include/vtk-5.8/vtkXMLWriter.h
-
-/usr/include/vtk-5.8/vtkXMLPImageDataWriter.h
-vtkXMLPStructuredDataWriter.h
-/usr/include/vtk-5.8/vtkXMLPStructuredDataWriter.h
-
-/usr/include/vtk-5.8/vtkXMLPStructuredDataWriter.h
-vtkXMLPDataWriter.h
-/usr/include/vtk-5.8/vtkXMLPDataWriter.h
-
-/usr/include/vtk-5.8/vtkXMLPUnstructuredDataWriter.h
-vtkXMLPDataWriter.h
-/usr/include/vtk-5.8/vtkXMLPDataWriter.h
-
-/usr/include/vtk-5.8/vtkXMLPUnstructuredGridWriter.h
-vtkXMLPUnstructuredDataWriter.h
-/usr/include/vtk-5.8/vtkXMLPUnstructuredDataWriter.h
-
-/usr/include/vtk-5.8/vtkXMLWriter.h
 vtkAlgorithm.h
 /usr/include/vtk-5.8/vtkAlgorithm.h
 

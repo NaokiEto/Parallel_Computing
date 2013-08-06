@@ -19,34 +19,34 @@
 #include <mpi.h>
 #include <stdio.h>
 
-std::vector<std::string> results;				// holds search results
+// holds search results
+std::vector<std::string> results;
 
 // recursive search algorithm
 void search(std::string curr_directory, std::string extension){
 	DIR* dir_point = opendir(curr_directory.c_str());
 	dirent* entry = readdir(dir_point);
 
-	while (entry){									// if !entry then end of directory
-
-		std::string fname = entry->d_name;	// filename
-											// if filename's last characters are extension
+	while (entry){
+	    // filename
+		std::string fname = entry->d_name;
+		// if filename's last characters are extension
 		if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
-			results.push_back(fname);		// add filename to results vector
+            // add filename to results vector
+			results.push_back(fname);
 
 		entry = readdir(dir_point);
-
 	}
-
 	return;
-
 }
 
 /**
- * This program generates a sphere (closed surface, vtkPolyData) and converts it into volume
- * representation (vtkImageData) where the foreground voxels are 1 and the background voxels are
- * 0. Internally vtkPolyDataToImageStencil is utilized. The resultant image is saved to disk 
- * in metaimage file format (SphereVolume.mhd).
+ * This program converts a vtkPolyData image into volume representation (vtkImageData) 
+ * where the foreground voxels are 1 and the background voxels are 0. Internally 
+ * vtkPolyDataToImageStencil is utilized. The resultant image is saved to disk in 
+ * metaimage file formats.
  */
+
 int main(int argc, char *argv[])
 {
 

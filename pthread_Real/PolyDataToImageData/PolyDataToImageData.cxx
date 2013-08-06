@@ -1,3 +1,12 @@
+#include <unistd.h>
+#include <iostream>
+#include <dirent.h>
+#include <vector>
+
+#include <sys/types.h>  /* Primitive System Data Types */ 
+#include <errno.h>      /* Errors */
+#include <stdlib.h>     /* General Utilities */
+
 #include <vtkVersion.h>
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
@@ -11,43 +20,54 @@
 #include <vtkPDataSetWriter.h>
 #include <vtkPolyDataMapper.h>
 
-#include <mpi.h>
 #include <stdio.h>
 #include <pthread.h>
 
-std::vector<std::string> results;				// holds search results
+pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
+
+// holds search results
+std::vector<std::string> results;
 
 // recursive search algorithm
 void search(std::string curr_directory, std::string extension){
 	DIR* dir_point = opendir(curr_directory.c_str());
 	dirent* entry = readdir(dir_point);
 
-	while (entry){									// if !entry then end of directory
-
-		std::string fname = entry->d_name;	// filename
-											// if filename's last characters are extension
+	while (entry){
+	    // filename
+		std::string fname = entry->d_name;
+		// if filename's last characters are extension
 		if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
-			results.push_back(fname);		// add filename to results vector
+            // add filename to results vector
+			results.push_back(fname);
 
 		entry = readdir(dir_point);
-
 	}
-
 	return;
-
 }
 
 /**
- * This program generates a sphere (closed surface, vtkPolyData) and converts it into volume
- * representation (vtkImageData) where the foreground voxels are 1 and the background voxels are
- * 0. Internally vtkPolyDataToImageStencil is utilized. The resultant image is saved to disk 
- * in metaimage file format (SphereVolume.mhd).
+ * This program converts a vtkPolyData image into volume representation (vtkImageData) 
+ * where the foreground voxels are 1 and the background voxels are 0. Internally 
+ * vtkPolyDataToImageStencil is utilized. The resultant image is saved to disk in 
+ * metaimage file formats.
  */
 
-void* thread_function(char VtkInput[], void *threadid)
+typedef struct Param_Function
 {
-    vtkPolyDataReader *reader = vtkPolyDataReader::New(); 
-    reader->SetFileName(vtkInput);
+    const char *VTKInput;
+    int threadId;
+    int numThreads;
+} params;
+
+
+void* thread_function(void* ptr)
+{
+    params* NewPtr;
+    NewPtr = (params*) ptr;
+
+    vtkPolyDataReader *reader = vtkPolyDataReader::New();
+    reader->SetFileName(NewPtr->VTKInput);
     reader->Update();
 
     vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    
@@ -67,8 +87,8 @@ void* thread_function(char VtkInput[], void *threadid)
     vtkSmartPointer<vtkImageStencil> imgstenc = vtkSmartPointer<vtkImageStencil>::New();
     reader->Update();
 
-    bounds[0] = -10.0 + 20.0 * double(rank - 1.0) / double(size - 1);
-    bounds[1] = -10.0 + 20.0 * double(rank) / double(size - 1);
+    bounds[0] = -10.0 + 20.0 * double(NewPtr->threadId - 1.0) / double(NewPtr->numThreads - 1);
+    bounds[1] = -10.0 + 20.0 * double(NewPtr->threadId) / double(NewPtr->numThreads - 1);
     bounds[2] = -10;
     bounds[3] = 10;
     bounds[4] = -10;
@@ -96,64 +116,75 @@ void* thread_function(char VtkInput[], void *threadid)
     //reader->Update();
 
     #if VTK_MAJOR_VERSION <= 5
-    whiteImage->SetScalarTypeToUnsignedChar();
-    whiteImage->AllocateScalars();
+        whiteImage->SetScalarTypeToUnsignedChar();
+        whiteImage->AllocateScalars();
     #else
-    whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
+        whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
     #endif
-    // fill the image with foreground voxels:
-    unsigned char inval = 255;
-    unsigned char outval = 0;
-    vtkIdType count = whiteImage->GetNumberOfPoints();
-    for (vtkIdType i = 0; i < count; ++i)
-    {
-        whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-    }
+        // fill the image with foreground voxels:
+        unsigned char inval = 255;
+        unsigned char outval = 0;
+        vtkIdType count = whiteImage->GetNumberOfPoints();
+        for (vtkIdType i = 0; i < count; ++i)
+        {
+            whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
+        }
 
-    //reader->Update();
+        //reader->Update();
 
-    // polygonal data --> image stencil:
-    vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-    //pol2stenc->Update();
+        // polygonal data --> image stencil:
+        vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
+        //pol2stenc->Update();
     #if VTK_MAJOR_VERSION <= 5
-    pol2stenc->SetInput(reader->GetOutput());
+        pol2stenc->SetInput(reader->GetOutput());
     #else
-    pol2stenc->SetInputData(reader->GetOutput());
+        pol2stenc->SetInputData(reader->GetOutput());
     #endif
-    pol2stenc->SetOutputOrigin(origin);
-    pol2stenc->SetOutputSpacing(spacing);
-    pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-    pol2stenc->Update();
+        pol2stenc->SetOutputOrigin(origin);
+        pol2stenc->SetOutputSpacing(spacing);
+        pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
+        pol2stenc->Update();
 
     //imgstenc->Update();
     #if VTK_MAJOR_VERSION <= 5
-    imgstenc->SetInput(whiteImage);
-    imgstenc->SetStencil(pol2stenc->GetOutput());
+        imgstenc->SetInput(whiteImage);
+        imgstenc->SetStencil(pol2stenc->GetOutput());
     #else
-    imgstenc->SetInputData(whiteImage);
-    imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
+        imgstenc->SetInputData(whiteImage);
+        imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
     #endif
-    imgstenc->ReverseStencilOff();
-    imgstenc->SetBackgroundValue(outval);
-    imgstenc->Update();
+        imgstenc->ReverseStencilOff();
+        imgstenc->SetBackgroundValue(outval);
+        imgstenc->Update();
 
     char str[80];
 
-    sprintf(str, "YoloSwag%d.mhd", rank);
+    sprintf(str, "YoloSwag%d.mhd", NewPtr->threadId);
+
+    printf(str);
+    printf("\n");
 
     writer->SetFileName(str);
 
     #if VTK_MAJOR_VERSION <= 5
-    writer->SetInput(imgstenc->GetOutput());
+        writer->SetInput(imgstenc->GetOutput());
     #else
-    writer->SetInputData(imgstenc->GetOutput());
+        writer->SetInputData(imgstenc->GetOutput());
     #endif
-    writer->Write();  
-    writer->Update();
+        writer->Write();  
+        writer->Update();
 }
 
 int main(int argc, char *argv[])
 {
+    int i;
+
+    // this is the input into the function for each thread
+    params thread_data_array[atoi(argv[1])];
+
+    // for the joining of threads later on
+    void* exit_status;
+
     // The file extension to look for is vtk
     std::string extension;
     extension = "vtk";
@@ -167,20 +198,20 @@ int main(int argc, char *argv[])
 
     std::string result = results[0];
 
-	const char * c = result.c_str();
+	pthread_t threads[atoi(argv[1])];
 
-	pthread_t = threads[argc];
+	for (i = 0; i < atoi(argv[1]); i++) {      
+        //creating threads
 
-	for (i = 0; i < argc-1; i++) {      /* creating threads */
-		if (pthread_create(&thread[i], NULL, thread_function, c) {
-			 fprintf(stderr, "Failed to create a thread\n"); 
-			 exit(1);
-		}
+	    thread_data_array[i].VTKInput = result.c_str();
+        thread_data_array[i].numThreads = atoi(argv[1]);
+        thread_data_array[i].threadId = i;
+		pthread_create(&threads[i], NULL, thread_function, (void*)&thread_data_array[i]);
 	}
 
-	for (i = 0; i < argc-1; i++)
+	for (i = 0; i < atoi(argv[1]); i++)
     {
-		pthread_join(thread[i], &exit_status);
+		pthread_join(threads[i], &exit_status);
     }
 
     // Delete the null files that are outputted

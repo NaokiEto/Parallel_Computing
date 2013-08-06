@@ -7,13 +7,13 @@ To convert vtk file to an mhd file (referencing a zraw file), we would go
 to the PolyDataToImageData/build directory, add in the vtk file, and then
 do the command
 
-sudo mpirun -np 5 ./PolyDataToImageData trytry1.vtk
+sudo mpirun -np 8 ./PolyDataToImageData
 
 This produces an mhd file and a zraw file in the Serial_Test directory.
 
 Then, you can render output the vtk files by doing:
 
-sudo mpirun -np 2 python MeshLabelImageColor.py BroccoliBeef.vtk
+sudo mpirun -np 8 python MeshLabelImageColor.py BroccoliBeef.vtk
 
 
 

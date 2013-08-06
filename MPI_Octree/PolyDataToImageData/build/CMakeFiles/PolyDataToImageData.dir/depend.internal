@@ -57,7 +57,6 @@ CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o
  /usr/include/vtk-5.8/vtkPointSet.h
  /usr/include/vtk-5.8/vtkPoints.h
  /usr/include/vtk-5.8/vtkPolyData.h
- /usr/include/vtk-5.8/vtkPolyDataAlgorithm.h
  /usr/include/vtk-5.8/vtkPolyDataMapper.h
  /usr/include/vtk-5.8/vtkPolyDataReader.h
  /usr/include/vtk-5.8/vtkPolyDataToImageStencil.h
@@ -66,7 +65,6 @@ CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o
  /usr/include/vtk-5.8/vtkSmartPointer.h
  /usr/include/vtk-5.8/vtkSmartPointerBase.h
  /usr/include/vtk-5.8/vtkSortDataArray.h
- /usr/include/vtk-5.8/vtkSphereSource.h
  /usr/include/vtk-5.8/vtkStdString.h
  /usr/include/vtk-5.8/vtkStructuredData.h
  /usr/include/vtk-5.8/vtkSystemIncludes.h
@@ -83,12 +81,6 @@ CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o
  /usr/include/vtk-5.8/vtkWeakPointerBase.h
  /usr/include/vtk-5.8/vtkWin32Header.h
  /usr/include/vtk-5.8/vtkWriter.h
- /usr/include/vtk-5.8/vtkXMLPDataWriter.h
- /usr/include/vtk-5.8/vtkXMLPImageDataWriter.h
- /usr/include/vtk-5.8/vtkXMLPStructuredDataWriter.h
- /usr/include/vtk-5.8/vtkXMLPUnstructuredDataWriter.h
- /usr/include/vtk-5.8/vtkXMLPUnstructuredGridWriter.h
- /usr/include/vtk-5.8/vtkXMLWriter.h
  /usr/include/vtk-5.8/vtkstd/algorithm
  /usr/include/vtk-5.8/vtkstd/exception
  /usr/include/vtk-5.8/vtkstd/map
