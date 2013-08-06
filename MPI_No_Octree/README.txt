@@ -1,19 +1,19 @@
 This directory attempts to do MPI on marching cubes using the following
 steps:
 
-get the VTK file, convert it to mhd, divide up it up and do MPI (the previous two steps might be switched), apply marching cubes to each process, output the resulting vtk data, and then conglomerate the files into 1 vtk file.
+get the VTK file,  divide up it up and do MPI, convert each piece to mhd, apply marching cubes to each process, output the resulting vtk data, and then conglomerate the files into 1 vtk file.
 
 To convert vtk file to an mhd file (referencing a zraw file), we would go 
 to the PolyDataToImageData/build directory, add in the vtk file, and then
 do the command
 
-sudo mpirun -np 5 ./PolyDataToImageData trytry1.vtk
+sudo mpirun -np 9 ./PolyDataToImageData
 
-This produces an mhd file and a zraw file in the Serial_Test directory.
+This produces an mhd file and a zraw file in the Serial_Test directory. Also the number of processes includes the master process
 
 Then, you can render output the vtk files by doing:
 
-sudo mpirun -np 2 python MeshLabelImageColor.py AllTheShrimp.vtk
+sudo mpirun -np 9 python MeshLabelImageColor.py AllTheShrimp.vtk
 
 
 

@@ -7,6 +7,14 @@
 #IncludeRegexTransform: 
 
 /home/lakers/Documents/Parallel_Computing/MPI_No_Octree/PolyDataToImageData/PolyDataToImageData.cxx
+unistd.h
+-
+iostream
+-
+dirent.h
+-
+vector
+-
 vtkVersion.h
 -
 vtkSmartPointer.h

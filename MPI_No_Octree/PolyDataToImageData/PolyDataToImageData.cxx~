@@ -147,6 +147,7 @@ int main(int argc, char *argv[])
 	    writer->Update();
     }
 
+    // Delete the null files that are outputted
     system("sudo rm -- \\(null\\)*");
 
     MPI_Finalize();    
