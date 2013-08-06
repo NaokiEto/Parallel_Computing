@@ -1,1 +1,0 @@
-/usr/bin/mpicc    -O3 -DNDEBUG     CMakeFiles/vtkWrapPythonInit.dir/vtkWrapPythonInit.c.o  -o ../bin/vtkWrapPythonInit -rdynamic 

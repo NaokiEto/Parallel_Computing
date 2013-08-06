@@ -1,1 +1,0 @@
-/usr/bin/mpicc  -fPIC   -O3 -DNDEBUG    -shared -Wl,-soname,libvtkexpat.so.5.8 -o ../../bin/libvtkexpat.so.5.8.0 CMakeFiles/vtkexpat.dir/xmlparse.c.o CMakeFiles/vtkexpat.dir/xmltok.c.o CMakeFiles/vtkexpat.dir/xmlrole.c.o 

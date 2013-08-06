@@ -1,1 +1,0 @@
-/usr/bin/mpiCC       CMakeFiles/B.dir/B.o  -o B -rdynamic libA.a 
