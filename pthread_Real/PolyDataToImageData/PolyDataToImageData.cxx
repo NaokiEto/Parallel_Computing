@@ -157,7 +157,17 @@ void* thread_function(void* ptr)
         imgstenc->SetBackgroundValue(outval);
         imgstenc->Update();
 
-    char str[80];
+    // figure out how many characters are the file names
+    int NumOfChar;
+
+    NumOfChar = 13;
+
+    if(NewPtr->threadId != 0)
+    {
+        NumOfChar = log10(NewPtr->threadId) + 13;
+    }
+
+    char str[NumOfChar];
 
     sprintf(str, "YoloSwag%d.mhd", NewPtr->threadId);
 

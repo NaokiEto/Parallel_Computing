@@ -176,7 +176,14 @@ int main(int argc, char *argv[])
 	    imgstenc->SetBackgroundValue(outval);
 	    imgstenc->Update();
 
-	    char str[80];
+	    // figure out how many characters are the file names
+	    int NumOfChar;
+
+	    NumOfChar = 13;
+
+	        NumOfChar = log10(rank) + 13;
+
+	    char str[NumOfChar];
 
 	    sprintf(str, "YoloSwag%d.mhd", rank);
 

@@ -1,16 +1,22 @@
 import vtk
 import numpy
 import glob, sys, os, string
+
+import mpi4py.rc
+mpi4py.rc.initialize = False
+
 from mpi4py import MPI
+
+MPI.Init()
 
 comm = MPI.COMM_WORLD
 size = comm.Get_size()
 rank = comm.Get_rank()
+MASTER = 0
 
 def parallel_mpi(n):
 
-    # Go to this directory
-    os.chdir("PolyDataToImageData/build")
+    print "Rank: ", n
 
     # Find the correct file
     for files in glob.glob("YoloSwag" + str(n) + ".mhd"):
@@ -35,8 +41,6 @@ def parallel_mpi(n):
         ##Prepare surface generation
         contour = vtk.vtkMarchingCubes() #for label images
 
-        contour.SetValue(0, -0.5)
-
         contour.SetInput( voi.GetOutput() )
         #contour.ComputeNormalsOn()
          
@@ -47,18 +51,6 @@ def parallel_mpi(n):
         print "Doing label", index
          
         contour.SetValue(0, index)
-
-        contour.SetValue(0, 127.5)
-
-        valContour = contour.GetValue(0)
-
-        print "Oth contour value: ", valContour
-
-        numContour = contour.GetNumberOfContours()
-
-        print "Number of Contours ", numContour
-
-
         contour.Update() #needed for GetNumberOfPolys() !!!
          
          
@@ -126,7 +118,7 @@ def parallel_mpi(n):
         mapper.SetLookupTable(colorLookupTable)
 
         writer = vtk.vtkPolyDataWriter()
-        writer.SetFileName("../../ShrimpChowFun" + str(n) + ".vtk")
+        writer.SetFileName("../../ShrimpChowFun" + str(n - 1) + ".vtk")
 
         if vtk.VTK_MAJOR_VERSION <= 5:
             writer.SetInput(triangleCellNormals.GetOutput())
@@ -134,16 +126,25 @@ def parallel_mpi(n):
             writer.SetInputData(triangleCellNormals.GetOutputPort())
         writer.Write()
 
-parallel_mpi(rank)
+# Slaves or kids or children or whatever's politically correct or to your liking
+if rank >= 1:
+    comm.recv(source=0, tag=1)
 
-if rank == 0:
+# Master
+if rank == MASTER:
+
+    # Go to this directory
+    os.chdir("PolyDataToImageData/build")
+
+    for i in range(1, size):
+        comm.send(parallel_mpi(i), dest=i, tag=1)
 
     # Go to this directory
     os.chdir("../../")
 
     appendWriter = vtk.vtkAppendPolyData()
 
-    for i in range(size):
+    for i in range(size - 1):
         inputNum = vtk.vtkPolyData()
         reader = vtk.vtkPolyDataReader()
 
@@ -195,3 +196,5 @@ if rank == 0:
     # Render and interact
     renderWindow.Render()
     renderWindowInteractor.Start()
+
+MPI.Finalize()

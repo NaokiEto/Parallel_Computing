@@ -126,7 +126,7 @@ def parallel_mpi(n):
             writer.SetInputData(triangleCellNormals.GetOutputPort())
         writer.Write()
 
-# Slaves (lol)
+# Slaves or kids or children or whatever's politically correct or to your liking
 if rank >= 1:
     comm.recv(source=0, tag=1)
 

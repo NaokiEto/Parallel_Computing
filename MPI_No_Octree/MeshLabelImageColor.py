@@ -48,7 +48,7 @@ def parallel_mpi(n):
         #choose one label
         index= 31
          
-        print "Doing label", index
+        #print "Doing label", index
          
         contour.SetValue(0, index)
         contour.Update() #needed for GetNumberOfPolys() !!!

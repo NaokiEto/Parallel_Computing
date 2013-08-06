@@ -19,34 +19,34 @@
 #include <mpi.h>
 #include <stdio.h>
 
-std::vector<std::string> results;				// holds search results
+// holds search results
+std::vector<std::string> results;
 
 // recursive search algorithm
 void search(std::string curr_directory, std::string extension){
 	DIR* dir_point = opendir(curr_directory.c_str());
 	dirent* entry = readdir(dir_point);
 
-	while (entry){									// if !entry then end of directory
-
-		std::string fname = entry->d_name;	// filename
-											// if filename's last characters are extension
+	while (entry){
+	    // filename
+		std::string fname = entry->d_name;
+		// if filename's last characters are extension
 		if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
-			results.push_back(fname);		// add filename to results vector
+            // add filename to results vector
+			results.push_back(fname);
 
 		entry = readdir(dir_point);
-
 	}
-
 	return;
-
 }
 
 /**
- * This program generates a sphere (closed surface, vtkPolyData) and converts it into volume
- * representation (vtkImageData) where the foreground voxels are 1 and the background voxels are
- * 0. Internally vtkPolyDataToImageStencil is utilized. The resultant image is saved to disk 
- * in metaimage file format (SphereVolume.mhd).
+ * This program converts a vtkPolyData image into volume representation (vtkImageData) 
+ * where the foreground voxels are 1 and the background voxels are 0. Internally 
+ * vtkPolyDataToImageStencil is utilized. The resultant image is saved to disk in 
+ * metaimage file formats.
  */
+
 int main(int argc, char *argv[])
 {
 
@@ -135,50 +135,57 @@ int main(int argc, char *argv[])
 	    //reader->Update();
 
         #if VTK_MAJOR_VERSION <= 5
-	    whiteImage->SetScalarTypeToUnsignedChar();
-	    whiteImage->AllocateScalars();
+	        whiteImage->SetScalarTypeToUnsignedChar();
+	        whiteImage->AllocateScalars();
         #else
-	    whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
+	        whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
         #endif
-	    // fill the image with foreground voxels:
-	    unsigned char inval = 255;
-	    unsigned char outval = 0;
-	    vtkIdType count = whiteImage->GetNumberOfPoints();
-	    for (vtkIdType i = 0; i < count; ++i)
-	    {
-	        whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-	    }
+	        // fill the image with foreground voxels:
+	        unsigned char inval = 255;
+	        unsigned char outval = 0;
+	        vtkIdType count = whiteImage->GetNumberOfPoints();
+	        for (vtkIdType i = 0; i < count; ++i)
+	        {
+	            whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
+	        }
 
 	    //reader->Update();
 
 	    // polygonal data --> image stencil:
-	    vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
+	        vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
 	    //pol2stenc->Update();
         #if VTK_MAJOR_VERSION <= 5
-	    pol2stenc->SetInput(reader->GetOutput());
+	        pol2stenc->SetInput(reader->GetOutput());
         #else
-	    pol2stenc->SetInputData(reader->GetOutput());
+	        pol2stenc->SetInputData(reader->GetOutput());
         #endif
-	    pol2stenc->SetOutputOrigin(origin);
-	    pol2stenc->SetOutputSpacing(spacing);
-	    pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-	    pol2stenc->Update();
+	        pol2stenc->SetOutputOrigin(origin);
+	        pol2stenc->SetOutputSpacing(spacing);
+	        pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
+	        pol2stenc->Update();
 
 	    //imgstenc->Update();
         #if VTK_MAJOR_VERSION <= 5
-	    imgstenc->SetInput(whiteImage);
-	    imgstenc->SetStencil(pol2stenc->GetOutput());
+	        imgstenc->SetInput(whiteImage);
+	        imgstenc->SetStencil(pol2stenc->GetOutput());
         #else
-	    imgstenc->SetInputData(whiteImage);
-	    imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
+	        imgstenc->SetInputData(whiteImage);
+	        imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
         #endif
-	    imgstenc->ReverseStencilOff();
-	    imgstenc->SetBackgroundValue(outval);
-	    imgstenc->Update();
+	        imgstenc->ReverseStencilOff();
+	        imgstenc->SetBackgroundValue(outval);
+	        imgstenc->Update();
 
-	    char str[80];
+        // figure out how many characters are the file names
+        int NumOfChar;
 
-	    sprintf(str, "YoloSwag%d.mhd", rank);
+        NumOfChar = 13;
+
+	    NumOfChar = log10(rank) + 13;
+
+        char str[NumOfChar];
+
+        sprintf(str, "YoloSwag%d.mhd", NewPtr->threadId);
 
 	    writer->SetFileName(str);
 

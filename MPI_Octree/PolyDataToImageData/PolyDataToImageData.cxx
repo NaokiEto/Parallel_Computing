@@ -135,50 +135,57 @@ int main(int argc, char *argv[])
 	    //reader->Update();
 
         #if VTK_MAJOR_VERSION <= 5
-	    whiteImage->SetScalarTypeToUnsignedChar();
-	    whiteImage->AllocateScalars();
+	        whiteImage->SetScalarTypeToUnsignedChar();
+	        whiteImage->AllocateScalars();
         #else
-	    whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
+	        whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
         #endif
-	    // fill the image with foreground voxels:
-	    unsigned char inval = 255;
-	    unsigned char outval = 0;
-	    vtkIdType count = whiteImage->GetNumberOfPoints();
-	    for (vtkIdType i = 0; i < count; ++i)
-	    {
-	        whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
-	    }
+	        // fill the image with foreground voxels:
+	        unsigned char inval = 255;
+	        unsigned char outval = 0;
+	        vtkIdType count = whiteImage->GetNumberOfPoints();
+	        for (vtkIdType i = 0; i < count; ++i)
+	        {
+	            whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
+	        }
 
 	    //reader->Update();
 
 	    // polygonal data --> image stencil:
-	    vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
+	        vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
 	    //pol2stenc->Update();
         #if VTK_MAJOR_VERSION <= 5
-	    pol2stenc->SetInput(reader->GetOutput());
+	        pol2stenc->SetInput(reader->GetOutput());
         #else
-	    pol2stenc->SetInputData(reader->GetOutput());
+	        pol2stenc->SetInputData(reader->GetOutput());
         #endif
-	    pol2stenc->SetOutputOrigin(origin);
-	    pol2stenc->SetOutputSpacing(spacing);
-	    pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-	    pol2stenc->Update();
+	        pol2stenc->SetOutputOrigin(origin);
+	        pol2stenc->SetOutputSpacing(spacing);
+	        pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
+	        pol2stenc->Update();
 
 	    //imgstenc->Update();
         #if VTK_MAJOR_VERSION <= 5
-	    imgstenc->SetInput(whiteImage);
-	    imgstenc->SetStencil(pol2stenc->GetOutput());
+	        imgstenc->SetInput(whiteImage);
+	        imgstenc->SetStencil(pol2stenc->GetOutput());
         #else
-	    imgstenc->SetInputData(whiteImage);
-	    imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
+	        imgstenc->SetInputData(whiteImage);
+	        imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
         #endif
-	    imgstenc->ReverseStencilOff();
-	    imgstenc->SetBackgroundValue(outval);
-	    imgstenc->Update();
+	        imgstenc->ReverseStencilOff();
+	        imgstenc->SetBackgroundValue(outval);
+	        imgstenc->Update();
 
-	    char str[80];
+        // figure out how many characters are the file names
+        int NumOfChar;
 
-	    sprintf(str, "YoloSwag%d.mhd", rank);
+        NumOfChar = 13;
+
+	    NumOfChar = log10(rank) + 13;
+
+        char str[NumOfChar];
+
+        sprintf(str, "YoloSwag%d.mhd", rank);
 
 	    writer->SetFileName(str);
 
