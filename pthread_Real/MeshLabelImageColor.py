@@ -2,21 +2,31 @@ import vtk
 import numpy
 import glob, sys, os, string
 
-import mpi4py.rc
-mpi4py.rc.initialize = False
+import threading
 
-from mpi4py import MPI
+size = sys.argv[1]
 
-MPI.Init()
+print "Argument is: ", size
 
-comm = MPI.COMM_WORLD
-size = comm.Get_size()
-rank = comm.Get_rank()
-MASTER = 0
+class thread_class(threading.Thread):
 
-def parallel_mpi(n):
+    def __init__(self, threadID): 
+        threading.Thread.__init__(self)
+        self.threadID = threadID
 
-    print "Rank: ", n
+    def run(self):
+
+        threadLock.acquire()
+
+        parallel_thread(int(self.threadID))
+
+        threadLock.release()
+
+def parallel_thread(n):
+
+    print "Rank: \n", n
+
+    print "any troubles??????"
 
     # Find the correct file
     for files in glob.glob("YoloSwag" + str(n) + ".mhd"):
@@ -60,7 +70,7 @@ def parallel_mpi(n):
         else:
             smoother.SetInputConnection(contour.GetOutputPort())    
         smoother.SetNumberOfIterations(30) #this has little effect on the error!
-        #smoother.BoundarySmoothingOff()
+        #smoother.BoundarySthreadLock = threading.Lock()moothingOff()
         #smoother.FeatureEdgeSmoothingOff()
         #smoother.SetFeatureAngle(120.0)
         #smoother.SetPassBand(.001)        #this increases the error a lot!
@@ -118,7 +128,7 @@ def parallel_mpi(n):
         mapper.SetLookupTable(colorLookupTable)
 
         writer = vtk.vtkPolyDataWriter()
-        writer.SetFileName("../../ShrimpChowFun" + str(n - 1) + ".vtk")
+        writer.SetFileName("../../ShrimpChowFun" + str(n) + ".vtk")
 
         if vtk.VTK_MAJOR_VERSION <= 5:
             writer.SetInput(triangleCellNormals.GetOutput())
@@ -126,75 +136,77 @@ def parallel_mpi(n):
             writer.SetInputData(triangleCellNormals.GetOutputPort())
         writer.Write()
 
-# Slaves or kids or children or whatever's politically correct or to your liking
-if rank >= 1:
-    comm.recv(source=0, tag=1)
 
-# Master
-if rank == MASTER:
+# Go to this directory
+os.chdir("PolyDataToImageData/build")
 
-    # Go to this directory
-    os.chdir("PolyDataToImageData/build")
+threadLock = threading.Lock()
 
-    for i in range(1, size):
-        comm.send(parallel_mpi(i), dest=i, tag=1)
+mythreads = []
 
-    # Go to this directory
-    os.chdir("../../")
+for i in range(int(size)):
+    s = thread_class(i)
+    mythreads.append(s)
+    s.start()
 
-    appendWriter = vtk.vtkAppendPolyData()
+for s in mythreads:
+    s.join()    
 
-    for i in range(size - 1):
-        inputNum = vtk.vtkPolyData()
-        reader = vtk.vtkPolyDataReader()
+# Go to this directory
+os.chdir("../../")
 
-        inputFileName = "ShrimpChowFun" + str(i) + ".vtk"
-        reader.SetFileName(inputFileName)
-        reader.Update()
-        inputNum.ShallowCopy(reader.GetOutput())
+appendWriter = vtk.vtkAppendPolyData()
 
-        if vtk.VTK_MAJOR_VERSION <= 5:
-            appendWriter.AddInput(reader.GetOutput())
+for i in range(int(size)):
+    inputNum = vtk.vtkPolyData()
+    reader = vtk.vtkPolyDataReader()
 
-        else:
-            appendWriter.AddInputData(inputNum)
-
-        appendWriter.Update()
-
-    pWriter = vtk.vtkPolyDataWriter()
-    pWriter.SetFileName(sys.argv[1])
+    inputFileName = "ShrimpChowFun" + str(i) + ".vtk"
+    reader.SetFileName(inputFileName)
+    reader.Update()
+    inputNum.ShallowCopy(reader.GetOutput())
 
     if vtk.VTK_MAJOR_VERSION <= 5:
-        pWriter.SetInput(appendWriter.GetOutput())
+        appendWriter.AddInput(reader.GetOutput())
+
     else:
-        pWriter.SetInputData(appendWriter.GetOutputPort())
-    pWriter.Write()
+        appendWriter.AddInputData(inputNum)
 
-    # Remove any duplicate points.
-    cleanFilter = vtk.vtkCleanPolyData()
-    cleanFilter.SetInputConnection(appendWriter.GetOutputPort())
-    cleanFilter.Update()
+    appendWriter.Update()
 
-    # Create a mapper
-    cumulativeMapper = vtk.vtkPolyDataMapper()
-    cumulativeMapper.SetInputConnection(cleanFilter.GetOutputPort())
+pWriter = vtk.vtkPolyDataWriter()
+pWriter.SetFileName(sys.argv[2])
 
-    # Create an actor
-    actor = vtk.vtkActor()
-    actor.SetMapper(cumulativeMapper)
+if vtk.VTK_MAJOR_VERSION <= 5:
+    pWriter.SetInput(appendWriter.GetOutput())
+else:
+    pWriter.SetInputData(appendWriter.GetOutputPort())
+pWriter.Write()
 
-    # Create a renderer, render window, and interactor
-    renderer = vtk.vtkRenderer()
-    renderWindow = vtk.vtkRenderWindow()
-    renderWindowInteractor = vtk.vtkRenderWindowInteractor()
+# Remove any duplicate points.
+cleanFilter = vtk.vtkCleanPolyData()
+cleanFilter.SetInputConnection(appendWriter.GetOutputPort())
+cleanFilter.Update()
 
-    # Add the actors to the scene
-    renderWindow.AddRenderer(renderer)
-    renderWindowInteractor.SetRenderWindow(renderWindow)
-    renderer.AddActor(actor)
+# Create a mapper
+cumulativeMapper = vtk.vtkPolyDataMapper()
+cumulativeMapper.SetInputConnection(cleanFilter.GetOutputPort())
 
-    # Render and interact
-    renderWindow.Render()
-    renderWindowInteractor.Start()
+# Create an actor
+actor = vtk.vtkActor()
+actor.SetMapper(cumulativeMapper)
 
-MPI.Finalize()
+# Create a renderer, render window, and interactor
+renderer = vtk.vtkRenderer()
+renderWindow = vtk.vtkRenderWindow()
+renderWindowInteractor = vtk.vtkRenderWindowInteractor()
+
+# Add the actors to the scene
+renderWindow.AddRenderer(renderer)
+renderWindowInteractor.SetRenderWindow(renderWindow)
+renderer.AddActor(actor)
+
+# Render and interact
+renderWindow.Render()
+renderWindowInteractor.Start()
+

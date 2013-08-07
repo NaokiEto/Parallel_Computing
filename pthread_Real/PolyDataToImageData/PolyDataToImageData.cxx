@@ -23,8 +23,6 @@
 #include <stdio.h>
 #include <pthread.h>
 
-pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
-
 // holds search results
 std::vector<std::string> results;
 
@@ -87,8 +85,9 @@ void* thread_function(void* ptr)
     vtkSmartPointer<vtkImageStencil> imgstenc = vtkSmartPointer<vtkImageStencil>::New();
     reader->Update();
 
-    bounds[0] = -10.0 + 20.0 * double(NewPtr->threadId - 1.0) / double(NewPtr->numThreads - 1);
-    bounds[1] = -10.0 + 20.0 * double(NewPtr->threadId) / double(NewPtr->numThreads - 1);
+    // take into account that the master thread is not of ID 0
+    bounds[0] = -10.0 + 20.0 * double(NewPtr->threadId) / double(NewPtr->numThreads);
+    bounds[1] = -10.0 + 20.0 * double(NewPtr->threadId + 1.0) / double(NewPtr->numThreads);
     bounds[2] = -10;
     bounds[3] = 10;
     bounds[4] = -10;
@@ -110,6 +109,8 @@ void* thread_function(void* ptr)
     origin[1] = bounds[2] + spacing[1]/10;
     origin[2] = bounds[4] + spacing[2]/10;
     whiteImage->SetOrigin(origin);
+
+    //printf("x-origin is %d for thread %d\n", origin[0], NewPtr->threadId);
 
     printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
 

@@ -56,11 +56,9 @@ int main(int argc, char *argv[])
 	// setup search parameters
 	std::string curr_directory = get_current_dir_name();
 
-    //printf("
-
 	search(curr_directory, extension);
 
-    std::cout << "- \t" <<  results[0] << std::endl;
+    //std::cout << "- \t" <<  results[0] << std::endl;
 
     std::string result = results[0];
 
@@ -80,8 +78,8 @@ int main(int argc, char *argv[])
     /*DETERMINE RANK OF THIS PROCESSOR*/
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    printf("This is the size, %d\n", size); 
-    printf("This is the rank, %d\n", rank);
+    //printf("This is the size, %d\n", size); 
+    //printf("This is the rank, %d\n", rank);
 
     if (rank >= 1)
     {
@@ -122,7 +120,7 @@ int main(int argc, char *argv[])
         }
         whiteImage->SetDimensions(dim);
         whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
+        //printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
 
         double origin[3];
 	    origin[0] = bounds[0] + spacing[0]/10;
@@ -130,7 +128,7 @@ int main(int argc, char *argv[])
 	    origin[2] = bounds[4] + spacing[2]/10;
 	    whiteImage->SetOrigin(origin);
 
-	    printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
+	    //printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
 
 	    //reader->Update();
 

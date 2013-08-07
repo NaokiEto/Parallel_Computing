@@ -1,0 +1,14 @@
+ObjectType = Image
+NDims = 3
+BinaryData = True
+BinaryDataByteOrderMSB = False
+CompressedData = True
+CompressedDataSize = 12071
+TransformMatrix = 1 0 0 0 1 0 0 0 1
+Offset = 7.51 -9.99 -9.99
+CenterOfRotation = 0 0 0
+ElementSpacing = 0.1 0.1 0.1
+DimSize = 25 200 200
+AnatomicalOrientation = ???
+ElementType = MET_UCHAR
+ElementDataFile = YoloSwag7.zraw

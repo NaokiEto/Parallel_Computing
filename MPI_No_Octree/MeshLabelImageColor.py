@@ -16,11 +16,11 @@ MASTER = 0
 
 def parallel_mpi(n):
 
-    print "Rank: ", n
+    #print "Rank: ", n
 
     # Find the correct file
     for files in glob.glob("YoloSwag" + str(n) + ".mhd"):
-        print files
+        #print files
 
         input = str(files)
          
@@ -36,7 +36,7 @@ def parallel_mpi(n):
 
         voi.Update()#necessary for GetScalarRange()
         srange= voi.GetOutput().GetScalarRange()#needs Update() before!
-        print "Range", srange        
+        #print "Range", srange        
  
         ##Prepare surface generation
         contour = vtk.vtkMarchingCubes() #for label images
@@ -75,7 +75,7 @@ def parallel_mpi(n):
          
         ##Find min and max z
         se_range= smoother_error.GetRange()
-        print se_range
+        #print se_range
         minz= se_range[0] #min(smoother_error)
         maxz= se_range[1] #max(smoother_error)
         if (maxz > 1):

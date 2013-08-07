@@ -7,5 +7,7 @@ then, to run, what we do is:
 
 sudo ./PolyDataToImageData 8
 
+sudo python MeshLabelImageColor.py 8 AllStars.vtk
+
 
 pretty chill
