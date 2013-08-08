@@ -147,6 +147,8 @@ mythreads = []
 for i in range(int(size)):
     s = thread_class(i)
     mythreads.append(s)
+
+for s in mythreads:
     s.start()
 
 for s in mythreads:

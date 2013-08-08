@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 	    origin[2] = bounds[4] + spacing[2]/10;
 	    whiteImage->SetOrigin(origin);
 
-	    printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
+	    //printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
 
 	    //reader->Update();
 

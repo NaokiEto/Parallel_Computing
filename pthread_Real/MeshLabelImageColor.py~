@@ -128,7 +128,7 @@ def parallel_thread(n):
         mapper.SetLookupTable(colorLookupTable)
 
         writer = vtk.vtkPolyDataWriter()
-        writer.SetFileName("../../ShrimpChowFun" + str(n - 1) + ".vtk")
+        writer.SetFileName("../../ShrimpChowFun" + str(n) + ".vtk")
 
         if vtk.VTK_MAJOR_VERSION <= 5:
             writer.SetInput(triangleCellNormals.GetOutput())
@@ -146,7 +146,11 @@ mythreads = []
 
 for i in range(int(size)):
     s = thread_class(i)
+
+for i in range(int(size)):
     mythreads.append(s)
+
+for s in mythreads:
     s.start()
 
 for s in mythreads:

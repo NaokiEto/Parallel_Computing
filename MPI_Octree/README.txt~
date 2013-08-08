@@ -11,7 +11,7 @@ sudo mpirun -np 9 ./PolyDataToImageData
 
 In this case, with 9, there are 8 child processes and 1 master process
 
-This produces an mhd file and a zraw file in the Serial_Test directory.
+This produces mhd and zraw files in the build directory
 
 Then, you can render output the vtk files by doing:
 

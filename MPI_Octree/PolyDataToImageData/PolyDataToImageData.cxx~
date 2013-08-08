@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
 
         char str[NumOfChar];
 
-        sprintf(str, "YoloSwag%d.mhd", NewPtr->threadId);
+        sprintf(str, "YoloSwag%d.mhd", rank);
 
 	    writer->SetFileName(str);
 
