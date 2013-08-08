@@ -40,11 +40,9 @@ CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkIdList.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkImageAlgorithm.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkImageData.h
-CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkImageReader2.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkImageStencil.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkImageStencilAlgorithm.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkImageStencilSource.h
-CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkImageWriter.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkIndent.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkInformation.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkInformationDoubleVectorKey.h
@@ -55,8 +53,6 @@ CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkLookupTable.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkMapper.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkMarchingCubes.h
-CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkMetaImageReader.h
-CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkMetaImageWriter.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkOStrStreamWrapper.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkOStreamWrapper.h
 CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o: /usr/include/vtk-5.8/vtkObject.h

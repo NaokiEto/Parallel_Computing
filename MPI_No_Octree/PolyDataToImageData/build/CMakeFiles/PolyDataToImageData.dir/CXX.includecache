@@ -9,8 +9,6 @@
 /home/lakers/Documents/Parallel_Computing/MPI_No_Octree/PolyDataToImageData/PolyDataToImageData.cxx
 unistd.h
 -
-iostream
--
 dirent.h
 -
 vector
@@ -25,8 +23,6 @@ vtkPolyDataReader.h
 -
 vtkImageData.h
 -
-vtkMetaImageWriter.h
--
 vtkPolyDataToImageStencil.h
 -
 vtkImageStencil.h
@@ -38,8 +34,6 @@ string.h
 vtkPDataSetWriter.h
 -
 vtkPolyDataMapper.h
--
-vtkMetaImageReader.h
 -
 vtkExtractVOI.h
 -
@@ -296,10 +290,6 @@ vtkDataSet.h
 vtkStructuredData.h
 /usr/include/vtk-5.8/vtkStructuredData.h
 
-/usr/include/vtk-5.8/vtkImageReader2.h
-vtkImageAlgorithm.h
-/usr/include/vtk-5.8/vtkImageAlgorithm.h
-
 /usr/include/vtk-5.8/vtkImageStencil.h
 vtkThreadedImageAlgorithm.h
 /usr/include/vtk-5.8/vtkThreadedImageAlgorithm.h
@@ -311,10 +301,6 @@ vtkAlgorithm.h
 /usr/include/vtk-5.8/vtkImageStencilSource.h
 vtkImageStencilAlgorithm.h
 /usr/include/vtk-5.8/vtkImageStencilAlgorithm.h
-
-/usr/include/vtk-5.8/vtkImageWriter.h
-vtkImageAlgorithm.h
-/usr/include/vtk-5.8/vtkImageAlgorithm.h
 
 /usr/include/vtk-5.8/vtkIndent.h
 vtkSystemIncludes.h
@@ -369,14 +355,6 @@ vtkPolyDataAlgorithm.h
 /usr/include/vtk-5.8/vtkPolyDataAlgorithm.h
 vtkContourValues.h
 /usr/include/vtk-5.8/vtkContourValues.h
-
-/usr/include/vtk-5.8/vtkMetaImageReader.h
-vtkImageReader2.h
-/usr/include/vtk-5.8/vtkImageReader2.h
-
-/usr/include/vtk-5.8/vtkMetaImageWriter.h
-vtkImageWriter.h
-/usr/include/vtk-5.8/vtkImageWriter.h
 
 /usr/include/vtk-5.8/vtkOStrStreamWrapper.h
 

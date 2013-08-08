@@ -41,11 +41,9 @@ CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o
  /usr/include/vtk-5.8/vtkIdList.h
  /usr/include/vtk-5.8/vtkImageAlgorithm.h
  /usr/include/vtk-5.8/vtkImageData.h
- /usr/include/vtk-5.8/vtkImageReader2.h
  /usr/include/vtk-5.8/vtkImageStencil.h
  /usr/include/vtk-5.8/vtkImageStencilAlgorithm.h
  /usr/include/vtk-5.8/vtkImageStencilSource.h
- /usr/include/vtk-5.8/vtkImageWriter.h
  /usr/include/vtk-5.8/vtkIndent.h
  /usr/include/vtk-5.8/vtkInformation.h
  /usr/include/vtk-5.8/vtkInformationDoubleVectorKey.h
@@ -56,8 +54,6 @@ CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o
  /usr/include/vtk-5.8/vtkLookupTable.h
  /usr/include/vtk-5.8/vtkMapper.h
  /usr/include/vtk-5.8/vtkMarchingCubes.h
- /usr/include/vtk-5.8/vtkMetaImageReader.h
- /usr/include/vtk-5.8/vtkMetaImageWriter.h
  /usr/include/vtk-5.8/vtkOStrStreamWrapper.h
  /usr/include/vtk-5.8/vtkOStreamWrapper.h
  /usr/include/vtk-5.8/vtkObject.h

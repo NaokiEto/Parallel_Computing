@@ -5,9 +5,6 @@ and do the sudo cmake .. and sudo make stuff
 
 then, to run, what we do is:
 
-sudo ./PolyDataToImageData 8
-
-sudo python MeshLabelImageColor.py 8 AllStars.vtk
-
+sudo ./PolyDataToImageData 8 AllStars.vtk
 
 pretty chill

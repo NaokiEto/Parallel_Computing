@@ -1,5 +1,4 @@
 #include <unistd.h>
-#include <iostream>
 #include <dirent.h>
 #include <vector>
 
@@ -8,14 +7,12 @@
 #include <vtkPolyData.h>
 #include <vtkPolyDataReader.h>
 #include <vtkImageData.h>
-#include <vtkMetaImageWriter.h>
 #include <vtkPolyDataToImageStencil.h>
 #include <vtkImageStencil.h>
 #include <vtkPointData.h>
 #include <string.h>
 #include <vtkPDataSetWriter.h>
 #include <vtkPolyDataMapper.h>
-#include <vtkMetaImageReader.h>
 #include <vtkExtractVOI.h>
 #include <vtkMarchingCubes.h>
 #include <vtkWindowedSincPolyDataFilter.h>
@@ -78,8 +75,6 @@ int main(int argc, char *argv[])
 
 	search(curr_directory, extension);
 
-    //std::cout << "- \t" <<  results[0] << std::endl;
-
     std::string result = results[0];
 
 	const char * c = result.c_str();
@@ -100,9 +95,6 @@ int main(int argc, char *argv[])
     /*DETERMINE RANK OF THIS PROCESSOR*/
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    //printf("This is the size, %d\n", size); 
-    //printf("This is the rank, %d\n", rank);
-
     if (rank >= 1)
     {
 
@@ -115,7 +107,6 @@ int main(int argc, char *argv[])
 
         vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    
 
-        //reader->GetOutput()->GetBounds(bounds);
         reader->Update();
         double spacing[3]; // desired volume spacing
         spacing[0] = 0.1;
@@ -124,7 +115,6 @@ int main(int argc, char *argv[])
         whiteImage->SetSpacing(spacing);
 
         double bounds[6];
-        vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
 
         // cut the corresponding white image and set the background:
         vtkSmartPointer<vtkImageStencil> imgstenc = vtkSmartPointer<vtkImageStencil>::New();
@@ -146,17 +136,12 @@ int main(int argc, char *argv[])
         }
         whiteImage->SetDimensions(dim);
         whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
-        //printf("dimension coordinates are %d, %d, %d, \n", dim[0], dim[1], dim[2]);
 
         double origin[3];
         origin[0] = bounds[0] + spacing[0]/10;
         origin[1] = bounds[2] + spacing[1]/10;
         origin[2] = bounds[4] + spacing[2]/10;
         whiteImage->SetOrigin(origin);
-
-        //printf("origin is %f, %f, %f \n", origin[0], origin[1], origin[2]);
-
-        //reader->Update();
 
         #if VTK_MAJOR_VERSION <= 5
 	    whiteImage->SetScalarTypeToUnsignedChar();
@@ -173,8 +158,6 @@ int main(int argc, char *argv[])
         {
 	    whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
         }
-
-        //reader->Update();
 
         // polygonal data --> image stencil:
         vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
@@ -203,38 +186,9 @@ int main(int argc, char *argv[])
         imgstenc->SetBackgroundValue(outval);
         imgstenc->Update();
 
-        // figure out how many characters are the file names
-        int NumOfChar;
-
-        NumOfChar = 13;
-
-	    NumOfChar = log10(rank) + 13;
-
-        char str[NumOfChar];
-
-        sprintf(str, "YoloSwag%d.mhd", rank);
-
-        printf(str);
-        printf("\n");
-
-        writer->SetFileName(str);
-
-        #if VTK_MAJOR_VERSION <= 5
-	    writer->SetInput(imgstenc->GetOutput());
-        #else
-	    writer->SetInputData(imgstenc->GetOutput());
-        #endif
-
-        writer->Write();  
-        writer->Update();
-
-        // lets open that file and pass it through vtkMarchingCubes
-        vtkMetaImageReader *MIReader = vtkMetaImageReader::New(); 
-        MIReader->SetFileName(str);
-        MIReader->Update();
-
+        // Pass the meta image data to the vtkMarchingCubes
         vtkExtractVOI *voi = vtkExtractVOI::New(); 
-        voi->SetInput(MIReader->GetOutput());  
+        voi->SetInput(imgstenc->GetOutput());  
         voi->SetSampleRate(1,1,1);
 
         voi->Update();
@@ -320,9 +274,9 @@ int main(int argc, char *argv[])
 
         // figure out how many characters are the file names
 
-        NumOfCharPD = 19;
+        NumOfCharPD = 18;
 
-        NumOfCharPD = log10(rank) + 19;
+        NumOfCharPD = log10(rank) + 18;
 
         strPD[NumOfCharPD];
 
@@ -342,21 +296,15 @@ int main(int argc, char *argv[])
 
         PDwriter->Write();
 
-
         MPI_Send(strPD, NumOfCharPD, MPI_CHAR, 0, 1, MPI_COMM_WORLD);
     }
 
 // Master
     if (rank == MASTER)
     {
-
-         printf("I'm here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n");
-
         for(int i = 1; i < size; i++)
         {
             MPI_Recv(strPD, NumOfCharPD, MPI_CHAR, i, 1, MPI_COMM_WORLD, &status);
-
-            printf("did it work? \n");
         }
         
         // to append each piece into 1 big vtk file
@@ -385,6 +333,8 @@ int main(int argc, char *argv[])
             #else
                 appendWriter->AddInputData(inputNum);
             #endif
+
+            remove(strPDMASTER);
 
             appendWriter->Update();
         }
@@ -426,16 +376,9 @@ int main(int argc, char *argv[])
         // Render and interact
         renderWindow->Render();
         renderWindowInteractor->Start();
-
     }
 
     MPI_Finalize();    
 
-    // Delete the null files that are outputted
-    system("sudo rm -- \\(null\\)*");
-    system("sudo rm *.mhd");
-    system("sudo rm *.zraw");
-    system("sudo rm ShrimpChowFun*");
-
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
