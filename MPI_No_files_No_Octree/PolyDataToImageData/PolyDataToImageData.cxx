@@ -26,6 +26,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkMPIController.h>
 
 #include <mpi.h>
 #include <stdio.h>
@@ -60,13 +61,6 @@ void search(std::string curr_directory, std::string extension){
 
 int main(int argc, char *argv[])
 {
-
-    int NumOfCharPD = 23;
-
-    char strPD[NumOfCharPD];
-
-    sprintf(strPD, "ShrimpChowFun.vtk");
-
     std::string extension;
     extension = "vtk";
 
@@ -76,32 +70,19 @@ int main(int argc, char *argv[])
     std::string result = results[0];
 	const char * c = result.c_str();
 
-    static int size;
+    vtkMPIController* controller = vtkMPIController::New();
 
-    int rank;
+    controller->Initialize(&argc, &argv);
 
-    MPI_Status status;
-
-    MPI_Init (&argc, &argv);
+    int rank = controller->GetLocalProcessId();
+    int size = controller->GetNumberOfProcesses();
 
     int MASTER = 0;
-
-    /*DETERMINE TOTAL NUMBER OF PROCESSORS*/
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-    /*DETERMINE RANK OF THIS PROCESSOR*/
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-    vtkPolyData *vtkPieces[size - 1];
-
 
     if (rank >= 1)
     {
         vtkPolyDataReader *reader = vtkPolyDataReader::New();
-        size_t length = strlen(c) + 1;
-        char strarg[length]; 
-        sprintf(strarg, c);
-        reader->SetFileName(strarg);
+        reader->SetFileName(c);
         reader->Update();
 
         vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    
@@ -229,7 +210,7 @@ int main(int argc, char *argv[])
 
         if (maxz > 1)
         {
-	    printf("Big smoother error: min/max: %d, %d", minz, maxz);
+	        printf("Big smoother error: min/max: %f, %f", minz, maxz);
         }
         minz= .3; // this way colours of different particles are comparable
         maxz= 1;
@@ -269,77 +250,29 @@ int main(int argc, char *argv[])
         mapper->SetScalarModeToUsePointData(); // the smoother error relates to the verts
         mapper->SetLookupTable(colorLookupTable);
 
-        vtkPolyDataWriter *PDwriter = vtkPolyDataWriter::New();
-
-        // figure out how many characters are the file names
-
-        NumOfCharPD = 18;
-
-        NumOfCharPD = log10(rank) + 18;
-
-        strPD[NumOfCharPD];
-
-        sprintf(strPD, "ShrimpChowFun%d.vtk", rank);
-
-        printf(strPD);
-
-        printf("\n");
-
-        PDwriter->SetFileName(strPD);
-
         #if VTK_MAJOR_VERSION <= 5
-    	    PDwriter->SetInput(triangleCellNormals->GetOutput());
-            vtkPieces[rank - 1] = triangleCellNormals->GetOutput();
+            controller->Send(triangleCellNormals->GetOutput(), 0, 1);
         #else
-    	    PDwriter->SetInputData(triangleCellNormals->GetOutputPort());
-            vtkPieces[rank - 1] = triangleCellNormals->GetOutputPort();  
+            controller->Send(triangleCellNormals->GetOutputPort(), 0, 1);  
         #endif
-
-        PDwriter->Write();
-
-        MPI_Send(vtkPieces[rank-1]->GetCellData(), vtkPieces[rank - 1]->GetNumberOfCells(), MPI_FLOAT, 0, 1, MPI_COMM_WORLD);
     }
 
     // Master
     if (rank == MASTER)
-    {
-        for(int i = 1; i < size; i++)
-        {
-            MPI_Recv(vtkPieces[rank-1]->GetCellData(), vtkPieces[rank - 1]->GetNumberOfCells(), MPI_FLOAT, i, 1, MPI_COMM_WORLD, &status);
-        }
-        
+    {     
         // to append each piece into 1 big vtk file
         vtkAppendPolyData *appendWriter = vtkAppendPolyData::New();
 
         for(int k = 1; k < size; k++)
         {
-            printf("let's do this! %d \n", k);
-            vtkPolyData *inputNum = vtkPolyData::New();
-            vtkPolyDataReader *reader = vtkPolyDataReader::New();
-
-            int NumOfCharPDMASTER;
-
-            NumOfCharPDMASTER = 19;
-
-            NumOfCharPDMASTER = log10(k) + 19;
-
-            char strPDMASTER[NumOfCharPDMASTER];
-
-            sprintf(strPDMASTER, "ShrimpChowFun%d.vtk", k);
-            reader->SetFileName(strPDMASTER);
-            reader->Update();
-            //inputNum->ShallowCopy(reader->GetOutput());
-            inputNum->ShallowCopy(vtkPieces[k-1]->GetCellData());
+            vtkPolyData* pd = vtkPolyData::New();
+            controller->Receive(pd, k, 1);
 
             #if VTK_MAJOR_VERSION <= 5
-                //appendWriter->AddInput(reader->GetOutput());
-                printf("come on man %d \n", k);
-                appendWriter->AddInput(vtkPieces[k-1]->GetCellData());
+                appendWriter->AddInput(pd);
             #else
-                appendWriter->AddInputData(inputNum);
+                appendWriter->AddInputData(pd);
             #endif
-
-            remove(strPDMASTER);
 
             appendWriter->Update();
         }
@@ -383,7 +316,8 @@ int main(int argc, char *argv[])
         renderWindowInteractor->Start();
     }
 
-    MPI_Finalize();    
+    controller->Finalize(); 
+    controller->Delete();
 
     return EXIT_SUCCESS;
 }
