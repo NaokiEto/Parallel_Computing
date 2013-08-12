@@ -7,8 +7,6 @@
 #IncludeRegexTransform: 
 
 /home/lakers/Documents/Parallel_Computing/MPI_files_No_Octree/PolyDataToImageData/PolyDataToImageData.cxx
-unistd.h
--
 dirent.h
 -
 vector
@@ -30,8 +28,6 @@ vtkImageStencil.h
 vtkPointData.h
 -
 string.h
--
-vtkPDataSetWriter.h
 -
 vtkPolyDataMapper.h
 -
@@ -218,10 +214,6 @@ vtkDataObject.h
 vtkFieldData.h
 /usr/include/vtk-5.8/vtkFieldData.h
 
-/usr/include/vtk-5.8/vtkDataSetWriter.h
-vtkDataWriter.h
-/usr/include/vtk-5.8/vtkDataWriter.h
-
 /usr/include/vtk-5.8/vtkDataWriter.h
 vtkWriter.h
 /usr/include/vtk-5.8/vtkWriter.h
@@ -379,10 +371,6 @@ vtkSystemIncludes.h
 /usr/include/vtk-5.8/vtkObjectFactory.h
 vtkObject.h
 /usr/include/vtk-5.8/vtkObject.h
-
-/usr/include/vtk-5.8/vtkPDataSetWriter.h
-vtkDataSetWriter.h
-/usr/include/vtk-5.8/vtkDataSetWriter.h
 
 /usr/include/vtk-5.8/vtkPointData.h
 vtkDataSetAttributes.h

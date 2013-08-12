@@ -31,7 +31,6 @@
 * @return - EXIT_SUCCESS at the end
 */
 
-#include <unistd.h>
 #include <dirent.h>
 #include <vector>
 
@@ -44,7 +43,6 @@
 #include <vtkImageStencil.h>
 #include <vtkPointData.h>
 #include <string.h>
-#include <vtkPDataSetWriter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkExtractVOI.h>
 #include <vtkMarchingCubes.h>
@@ -91,8 +89,11 @@ void search(std::string curr_directory, std::string extension){
 /**
  * This program converts a vtkPolyData image into volume representation 
  * (vtkImageData) where the foreground voxels are 1 and the background 
- * voxels are 0. Internally vtkPolyDataToImageStencil is utilized. The 
- * resultant image is saved to disk in metaimage file formats.
+ * voxels are 0. Internally vtkPolyDataToImageStencil is utilized as 
+ * as MPI. The resultant image is saved to disk in metaimage file formats. 
+ * vtkMarchingCubes is applied to these file formats, and temporary vtk
+ * files are outputted. These temporary files are then conglomerated by 
+ * the master process, and an output vtk file is outputted.
  */
 
 int main(int argc, char *argv[])
@@ -136,7 +137,7 @@ int main(int argc, char *argv[])
     // figure out how many characters are in the temporary file name, 
     // i.e. "ShrimpChowFun128475.vtk"
     if(rank >= 1)
-        int NumOfCharPD += log10(rank);
+        NumOfCharPD += log10(rank);
 
     char strPD[NumOfCharPD];
 

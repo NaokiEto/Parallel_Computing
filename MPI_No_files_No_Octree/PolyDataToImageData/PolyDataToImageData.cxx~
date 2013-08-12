@@ -82,9 +82,6 @@ int main(int argc, char *argv[])
     if (rank >= 1)
     {
         vtkPolyDataReader *reader = vtkPolyDataReader::New();
-        size_t length = strlen(c) + 1;
-        char strarg[length]; 
-        sprintf(strarg, c);
         reader->SetFileName(c);
         reader->Update();
 

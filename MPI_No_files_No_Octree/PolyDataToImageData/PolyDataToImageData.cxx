@@ -1,3 +1,36 @@
+/**
+* Do whatever you want with public license
+* Version 1, August 11, 2013
+*
+* Copyright (C) 2013 Naoki Eto <neto@lbl.gov>
+*
+* Everyone is permitted to copy and distribute verbatim or modified
+* copies of this license document, and changing it is allowed as long
+* as the name is changed.
+*
+* Do whatever you want with the public license
+*
+* TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+*
+* 0. You just do what you want to do.
+* 
+*/
+/**
+* @file PolyDataToImageData.cxx
+* @author Naoki Eto
+* @date August 11, 2013
+* @brief This program gets the VTK file,  divides up it up, and performs MPI. 
+*        It convert each piece to metaimage data so that vtkMarchingCubes 
+*        class can be applied, apply marching cubes to each process, outputs 
+*        the resulting vtk data, and then conglomerates the data into 1 vtk 
+*        file.
+* @param[in] number of processes - number of processes for MPI (look at README 
+             for more information)
+* @param[in] argv[1] - the output's filename
+* @param[out] pWriter - vtkPolyData file with the output's filename
+* @return - EXIT_SUCCESS at the end
+*/
+
 #include <unistd.h>
 #include <dirent.h>
 #include <vector>
