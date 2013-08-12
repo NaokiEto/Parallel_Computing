@@ -16,7 +16,7 @@
 * 
 */
 /**
-* @file PolyDataToImageData.cxx
+* @file ApplyingVtkMarchingCubes.cxx
 * @author Naoki Eto
 * @date August 11, 2013
 * @brief This program gets the VTK file,  divides up it up, and performs MPI. 
@@ -43,7 +43,6 @@
 #include <vtkImageStencil.h>
 #include <vtkPointData.h>
 #include <string.h>
-//#include <vtkPDataSetWriter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkExtractVOI.h>
 #include <vtkMarchingCubes.h>
@@ -58,13 +57,13 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkMPIController.h>
 
 #include <mpi.h>
 #include <stdio.h>
 
-/* holds search results for the vtk file */
+// holds search results
 std::vector<std::string> results;
-
 
 /**
 * This recursive search algorithm function will be used later to find the vtk 
@@ -82,6 +81,7 @@ void search(std::string curr_directory, std::string extension){
 		if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
             // add filename to results vector
 			results.push_back(fname);
+
 		entry = readdir(dir_point);
 	}
 	return;
@@ -92,18 +92,16 @@ void search(std::string curr_directory, std::string extension){
  * (vtkImageData) where the foreground voxels are 1 and the background 
  * voxels are 0. Internally vtkPolyDataToImageStencil is utilized as 
  * as MPI. The resultant image is saved to disk in metaimage file formats. 
- * vtkMarchingCubes is applied to these file formats, and temporary vtk
- * files are outputted. These temporary files are then conglomerated by 
- * the master process, and an output vtk file is outputted.
+ * vtkMarchingCubes is applied to these file formats, which are then 
+ * conglomerated by the master process, and an output vtk file is outputted.
  */
-
 int main(int argc, char *argv[])
 {
     /* The vtk file extension we want to search for */
     std::string extension;
     extension = "vtk";
 
-	// Setup search parameters
+	// setup search parameters
 	std::string curr_directory = get_current_dir_name();
 	search(curr_directory, extension);
     std::string result = results[0];
@@ -111,36 +109,19 @@ int main(int argc, char *argv[])
     /* This is where the vtk file name result is */
 	const char * c = result.c_str();
 
-    /* Number of processes */
-    static int size;
-
-    /* Rank of process */
-    int rank;
-
-    MPI_Status status;
+    vtkMPIController* controller = vtkMPIController::New();
 
     // Initializing MPI
-    MPI_Init (&argc, &argv);
+    controller->Initialize(&argc, &argv);
+
+    /* Figure out total amount of processors */
+    int rank = controller->GetLocalProcessId();
+
+    /* Figure out the rank of this processor */
+    int size = controller->GetNumberOfProcesses();
 
     /* The master process will be of rank 0 */
     int MASTER = 0;
-
-    // Figure out total amount of processors
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-    // Figure out the rank of this processor
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-    /* This is for the temporary file names created. It contains the number 
-       of characters in the temporary filename "ShrimpChowFun#.vtk" */
-    int NumOfCharPD = 18;
-
-    // figure out how many characters are in the temporary file name, 
-    // i.e. "ShrimpChowFun128475.vtk"
-    if(rank >= 1)
-        NumOfCharPD += log10(rank);
-
-    char strPD[NumOfCharPD];
 
     // If not master process, do the vtkMarchingCubes implementation
     if (rank >= 1)
@@ -154,6 +135,7 @@ int main(int argc, char *argv[])
         vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    
 
         reader->Update();
+
         /* desired volume spacing */
         double spacing[3];
         spacing[0] = 0.1;
@@ -181,7 +163,7 @@ int main(int argc, char *argv[])
         int dim[3];
         for (int i = 0; i < 3; i++)
         {
-            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
+        dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
         }
         whiteImage->SetDimensions(dim);
         whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
@@ -206,7 +188,7 @@ int main(int argc, char *argv[])
         vtkIdType count = whiteImage->GetNumberOfPoints();
         for (vtkIdType i = 0; i < count; ++i)
         {
-	        whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
+	    whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
         }
 
         // polygonal data --> image stencil:
@@ -223,7 +205,6 @@ int main(int argc, char *argv[])
         pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
         pol2stenc->Update();
 
-        //imgstenc->Update();
         #if VTK_MAJOR_VERSION <= 5
 	        imgstenc->SetInput(whiteImage);
 	        imgstenc->SetStencil(pol2stenc->GetOutput());
@@ -296,9 +277,9 @@ int main(int argc, char *argv[])
         vtkPolyDataNormals *triangleCellNormals= vtkPolyDataNormals::New();
 
         #if VTK_MAJOR_VERSION <= 5
-	    triangleCellNormals->SetInput(smoothed_polys);
+	        triangleCellNormals->SetInput(smoothed_polys);
         #else
-	    triangleCellNormals->SetInputData(smoothed_polys);   
+	        triangleCellNormals->SetInputData(smoothed_polys);   
         #endif
 
         triangleCellNormals->ComputeCellNormalsOn();
@@ -310,9 +291,9 @@ int main(int argc, char *argv[])
         vtkPolyDataMapper *mapper= vtkPolyDataMapper::New();
 
         #if VTK_MAJOR_VERSION <= 5
-	    mapper->SetInput(triangleCellNormals->GetOutput()); // this is better for vis;-)
+	        mapper->SetInput(triangleCellNormals->GetOutput()); // this is better for vis;-)
         #else
-	    mapper->SetInputConnection(triangleCellNormals->GetOutputPort()); // this is better for vis;-)      
+	        mapper->SetInputConnection(triangleCellNormals->GetOutputPort()); // this is better for vis;-)      
         #endif
 
         mapper->ScalarVisibilityOn(); // show colour 
@@ -320,61 +301,31 @@ int main(int argc, char *argv[])
         mapper->SetScalarModeToUsePointData(); // the smoother error relates to the verts
         mapper->SetLookupTable(colorLookupTable);
 
-        /* vtkPolyDataWriter for temporary file */
-        vtkPolyDataWriter *PDwriter = vtkPolyDataWriter::New();
-
-        sprintf(strPD, "ShrimpChowFun%d.vtk", rank);
-
-        PDwriter->SetFileName(strPD);
-
+        // send the vtkPolyData to the master process
         #if VTK_MAJOR_VERSION <= 5
-    	    PDwriter->SetInput(triangleCellNormals->GetOutput());
+            controller->Send(triangleCellNormals->GetOutput(), 0, 1);
         #else
-    	    PDwriter->SetInputData(triangleCellNormals->GetOutputPort());  
+            controller->Send(triangleCellNormals->GetOutputPort(), 0, 1);  
         #endif
-
-        PDwriter->Write();
-
-        // Send this temporary file name to the master process
-        MPI_Send(strPD, NumOfCharPD, MPI_CHAR, 0, 1, MPI_COMM_WORLD);
     }
 
     // Master
     if (rank == MASTER)
-    {
-        // Receive all the temporary file names
-        for(int i = 1; i < size; i++)
-        {
-            MPI_Recv(strPD, NumOfCharPD, MPI_CHAR, i, 1, MPI_COMM_WORLD, &status);
-        }
-        
-        /* to append each piece into 1 big vtk file */
+    {     
+        // to append each piece into 1 big vtk file
         vtkAppendPolyData *appendWriter = vtkAppendPolyData::New();
 
-        // Go through the temporary files and append the vtk data
+        // go through the processes, and append
         for(int k = 1; k < size; k++)
         {
-            vtkPolyData *inputNum = vtkPolyData::New();
-            vtkPolyDataReader *reader = vtkPolyDataReader::New();
-
-            // number of characters in file name
-            int NumOfCharPDMASTER = log10(k) + 18;
-
-            char strPDMASTER[NumOfCharPDMASTER];
-
-            sprintf(strPDMASTER, "ShrimpChowFun%d.vtk", k);
-            reader->SetFileName(strPDMASTER);
-            reader->Update();
-            inputNum->ShallowCopy(reader->GetOutput());
+            vtkPolyData* pd = vtkPolyData::New();
+            controller->Receive(pd, k, 1);
 
             #if VTK_MAJOR_VERSION <= 5
-                appendWriter->AddInput(reader->GetOutput());
+                appendWriter->AddInput(pd);
             #else
-                appendWriter->AddInputData(inputNum);
+                appendWriter->AddInputData(pd);
             #endif
-
-            // remove temporary files
-            remove(strPDMASTER);
 
             appendWriter->Update();
         }
@@ -419,7 +370,8 @@ int main(int argc, char *argv[])
         renderWindowInteractor->Start();
     }
 
-    MPI_Finalize();    
+    controller->Finalize(); 
+    controller->Delete();
 
     return EXIT_SUCCESS;
 }

@@ -16,9 +16,9 @@
 * 
 */
 /**
-* @file PolyDataToImageData.cxx
+* @file ApplyingVtkMarchingCubes.cxx
 * @author Naoki Eto
-* @date August 11, 2013
+* @date August 12, 2013
 * @brief This program gets the VTK file,  divides up it up, and performs MPI. 
 *        It convert each piece to metaimage data so that vtkMarchingCubes 
 *        class can be applied, apply marching cubes to each process, outputs 
@@ -31,7 +31,6 @@
 * @return - EXIT_SUCCESS at the end
 */
 
-#include <unistd.h>
 #include <dirent.h>
 #include <vector>
 
@@ -44,7 +43,6 @@
 #include <vtkImageStencil.h>
 #include <vtkPointData.h>
 #include <string.h>
-#include <vtkPDataSetWriter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkExtractVOI.h>
 #include <vtkMarchingCubes.h>
@@ -67,7 +65,11 @@
 // holds search results
 std::vector<std::string> results;
 
-// recursive search algorithm
+/**
+* This recursive search algorithm function will be used later to find the vtk 
+* file in the directory. The user is to place the vtk file in the build 
+* directory, and this function will find it and output it.
+*/
 void search(std::string curr_directory, std::string extension){
 	DIR* dir_point = opendir(curr_directory.c_str());
 	dirent* entry = readdir(dir_point);
@@ -86,14 +88,16 @@ void search(std::string curr_directory, std::string extension){
 }
 
 /**
- * This program converts a vtkPolyData image into volume representation (vtkImageData) 
- * where the foreground voxels are 1 and the background voxels are 0. Internally 
- * vtkPolyDataToImageStencil is utilized. The resultant image is saved to disk in 
- * metaimage file formats.
+ * This program converts a vtkPolyData image into volume representation 
+ * (vtkImageData) where the foreground voxels are 1 and the background 
+ * voxels are 0. Internally vtkPolyDataToImageStencil is utilized as 
+ * as MPI. The resultant image is saved to disk in metaimage file formats. 
+ * vtkMarchingCubes is applied to these file formats, which are then 
+ * conglomerated by the master process, and an output vtk file is outputted.
  */
-
 int main(int argc, char *argv[])
 {
+    /* The vtk file extension we want to search for */
     std::string extension;
     extension = "vtk";
 
@@ -101,19 +105,29 @@ int main(int argc, char *argv[])
 	std::string curr_directory = get_current_dir_name();
 	search(curr_directory, extension);
     std::string result = results[0];
+
+    /* This is where the vtk file name result is */
 	const char * c = result.c_str();
 
     vtkMPIController* controller = vtkMPIController::New();
 
+    // Initializing MPI
     controller->Initialize(&argc, &argv);
 
+    /* Figure out total amount of processors */
     int rank = controller->GetLocalProcessId();
+
+    /* Figure out the rank of this processor */
     int size = controller->GetNumberOfProcesses();
 
+    /* The master process will be of rank 0 */
     int MASTER = 0;
 
+    // If not master process, do the vtkMarchingCubes implementation
     if (rank >= 1)
     {
+        // The vtkPolyDataReader to read the input vtk file in the build
+        // directory
         vtkPolyDataReader *reader = vtkPolyDataReader::New();
         reader->SetFileName(c);
         reader->Update();
@@ -121,18 +135,23 @@ int main(int argc, char *argv[])
         vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    
 
         reader->Update();
-        double spacing[3]; // desired volume spacing
+
+        /* desired volume spacing */
+        double spacing[3];
         spacing[0] = 0.1;
         spacing[1] = 0.1;
         spacing[2] = 0.1;
         whiteImage->SetSpacing(spacing);
 
+        /* The bounds that this processor will deal with in the vtk file */
         double bounds[6];
 
         // cut the corresponding white image and set the background:
         vtkSmartPointer<vtkImageStencil> imgstenc = vtkSmartPointer<vtkImageStencil>::New();
         reader->Update();
 
+        // Each processor will work with a different piece of vtk data. It's basically just 
+        // a rectangular prism of data
         bounds[0] = -10.0 + 20.0 * double(rank - 1.0) / double(size - 1);
         bounds[1] = -10.0 + 20.0 * double(rank) / double(size - 1);
         bounds[2] = -10;
@@ -140,8 +159,7 @@ int main(int argc, char *argv[])
         bounds[4] = -10;
         bounds[5] = 10;
 
-        //reader->Update();
-        // compute dimensions
+        /* compute dimensions */
         int dim[3];
         for (int i = 0; i < 3; i++)
         {
@@ -150,6 +168,7 @@ int main(int argc, char *argv[])
         whiteImage->SetDimensions(dim);
         whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
 
+        /* compute the origin */
         double origin[3];
         origin[0] = bounds[0] + spacing[0]/10;
         origin[1] = bounds[2] + spacing[1]/10;
@@ -174,7 +193,7 @@ int main(int argc, char *argv[])
 
         // polygonal data --> image stencil:
         vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-        //pol2stenc->Update();
+
         #if VTK_MAJOR_VERSION <= 5
 	       pol2stenc->SetInput(reader->GetOutput());
         #else
@@ -186,7 +205,6 @@ int main(int argc, char *argv[])
         pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
         pol2stenc->Update();
 
-        //imgstenc->Update();
         #if VTK_MAJOR_VERSION <= 5
 	        imgstenc->SetInput(whiteImage);
 	        imgstenc->SetStencil(pol2stenc->GetOutput());
@@ -259,9 +277,9 @@ int main(int argc, char *argv[])
         vtkPolyDataNormals *triangleCellNormals= vtkPolyDataNormals::New();
 
         #if VTK_MAJOR_VERSION <= 5
-	    triangleCellNormals->SetInput(smoothed_polys);
+	        triangleCellNormals->SetInput(smoothed_polys);
         #else
-	    triangleCellNormals->SetInputData(smoothed_polys);   
+	        triangleCellNormals->SetInputData(smoothed_polys);   
         #endif
 
         triangleCellNormals->ComputeCellNormalsOn();
@@ -273,9 +291,9 @@ int main(int argc, char *argv[])
         vtkPolyDataMapper *mapper= vtkPolyDataMapper::New();
 
         #if VTK_MAJOR_VERSION <= 5
-	    mapper->SetInput(triangleCellNormals->GetOutput()); // this is better for vis;-)
+	        mapper->SetInput(triangleCellNormals->GetOutput()); // this is better for vis;-)
         #else
-	    mapper->SetInputConnection(triangleCellNormals->GetOutputPort()); // this is better for vis;-)      
+	        mapper->SetInputConnection(triangleCellNormals->GetOutputPort()); // this is better for vis;-)      
         #endif
 
         mapper->ScalarVisibilityOn(); // show colour 
@@ -283,6 +301,7 @@ int main(int argc, char *argv[])
         mapper->SetScalarModeToUsePointData(); // the smoother error relates to the verts
         mapper->SetLookupTable(colorLookupTable);
 
+        // send the vtkPolyData to the master process
         #if VTK_MAJOR_VERSION <= 5
             controller->Send(triangleCellNormals->GetOutput(), 0, 1);
         #else
@@ -296,6 +315,7 @@ int main(int argc, char *argv[])
         // to append each piece into 1 big vtk file
         vtkAppendPolyData *appendWriter = vtkAppendPolyData::New();
 
+        // go through the processes, and append
         for(int k = 1; k < size; k++)
         {
             vtkPolyData* pd = vtkPolyData::New();
@@ -319,6 +339,7 @@ int main(int argc, char *argv[])
             pWriter->SetInputData(appendWriter->GetOutputPort());
         #endif
 
+        // output vtk file
         pWriter->Write();
 
         // Remove any duplicate points.

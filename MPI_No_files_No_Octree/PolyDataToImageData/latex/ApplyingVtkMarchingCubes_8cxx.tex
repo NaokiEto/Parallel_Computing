@@ -1,5 +1,5 @@
-\hypertarget{PolyDataToImageData_8cxx}{\section{\-Poly\-Data\-To\-Image\-Data.\-cxx \-File \-Reference}
-\label{PolyDataToImageData_8cxx}\index{\-Poly\-Data\-To\-Image\-Data.\-cxx@{\-Poly\-Data\-To\-Image\-Data.\-cxx}}
+\hypertarget{ApplyingVtkMarchingCubes_8cxx}{\section{\-Applying\-Vtk\-Marching\-Cubes.\-cxx \-File \-Reference}
+\label{ApplyingVtkMarchingCubes_8cxx}\index{\-Applying\-Vtk\-Marching\-Cubes.\-cxx@{\-Applying\-Vtk\-Marching\-Cubes.\-cxx}}
 }
 
 
@@ -31,19 +31,20 @@
 {\ttfamily \#include $<$vtk\-Renderer.\-h$>$}\*
 {\ttfamily \#include $<$vtk\-Render\-Window.\-h$>$}\*
 {\ttfamily \#include $<$vtk\-Render\-Window\-Interactor.\-h$>$}\*
+{\ttfamily \#include $<$vtk\-M\-P\-I\-Controller.\-h$>$}\*
 {\ttfamily \#include $<$mpi.\-h$>$}\*
 {\ttfamily \#include $<$stdio.\-h$>$}\*
 \subsection*{\-Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \hyperlink{PolyDataToImageData_8cxx_abf4d3375ca506ee4e183fad5ff828be2}{search} (std\-::string curr\-\_\-directory, std\-::string extension)
+void \hyperlink{ApplyingVtkMarchingCubes_8cxx_abf4d3375ca506ee4e183fad5ff828be2}{search} (std\-::string curr\-\_\-directory, std\-::string extension)
 \item 
-int \hyperlink{PolyDataToImageData_8cxx_a0ddf1224851353fc92bfbff6f499fa97}{main} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+int \hyperlink{ApplyingVtkMarchingCubes_8cxx_a0ddf1224851353fc92bfbff6f499fa97}{main} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
 \end{DoxyCompactItemize}
 \subsection*{\-Variables}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{PolyDataToImageData_8cxx_a6c0d9afe65725502d251dc2102870861}{std\-::vector$<$ std\-::string $>$ {\bfseries results}}\label{PolyDataToImageData_8cxx_a6c0d9afe65725502d251dc2102870861}
+\hypertarget{ApplyingVtkMarchingCubes_8cxx_a6c0d9afe65725502d251dc2102870861}{std\-::vector$<$ std\-::string $>$ {\bfseries results}}\label{ApplyingVtkMarchingCubes_8cxx_a6c0d9afe65725502d251dc2102870861}
 
 \end{DoxyCompactItemize}
 
@@ -65,7 +66,7 @@ int \hyperlink{PolyDataToImageData_8cxx_a0ddf1224851353fc92bfbff6f499fa97}{main}
 \-Naoki \-Eto 
 \end{DoxyAuthor}
 \begin{DoxyDate}{\-Date}
-\-August 11, 2013 
+\-August 12, 2013 
 \end{DoxyDate}
 
 \begin{DoxyParams}[1]{\-Parameters}
@@ -82,20 +83,20 @@ int \hyperlink{PolyDataToImageData_8cxx_a0ddf1224851353fc92bfbff6f499fa97}{main}
 
 
 \subsection{\-Function \-Documentation}
-\hypertarget{PolyDataToImageData_8cxx_a0ddf1224851353fc92bfbff6f499fa97}{\index{\-Poly\-Data\-To\-Image\-Data.\-cxx@{\-Poly\-Data\-To\-Image\-Data.\-cxx}!main@{main}}
-\index{main@{main}!PolyDataToImageData.cxx@{\-Poly\-Data\-To\-Image\-Data.\-cxx}}
+\hypertarget{ApplyingVtkMarchingCubes_8cxx_a0ddf1224851353fc92bfbff6f499fa97}{\index{\-Applying\-Vtk\-Marching\-Cubes.\-cxx@{\-Applying\-Vtk\-Marching\-Cubes.\-cxx}!main@{main}}
+\index{main@{main}!ApplyingVtkMarchingCubes.cxx@{\-Applying\-Vtk\-Marching\-Cubes.\-cxx}}
 \subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf main} (
 \begin{DoxyParamCaption}
 \item[{int}]{argc, }
 \item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]}}
 \end{DoxyParamCaption}
-)}}\label{PolyDataToImageData_8cxx_a0ddf1224851353fc92bfbff6f499fa97}
-\-This program converts a vtk\-Poly\-Data image into volume representation (vtk\-Image\-Data) where the foreground voxels are 1 and the background voxels are 0. \-Internally vtk\-Poly\-Data\-To\-Image\-Stencil is utilized as as \-M\-P\-I. \-The resultant image is saved to disk in metaimage file formats. vtk\-Marching\-Cubes is applied to these file formats, and temporary vtk files are outputted. \-These temporary files are then conglomerated by the master process, and an output vtk file is outputted. \hypertarget{PolyDataToImageData_8cxx_abf4d3375ca506ee4e183fad5ff828be2}{\index{\-Poly\-Data\-To\-Image\-Data.\-cxx@{\-Poly\-Data\-To\-Image\-Data.\-cxx}!search@{search}}
-\index{search@{search}!PolyDataToImageData.cxx@{\-Poly\-Data\-To\-Image\-Data.\-cxx}}
+)}}\label{ApplyingVtkMarchingCubes_8cxx_a0ddf1224851353fc92bfbff6f499fa97}
+\-This program converts a vtk\-Poly\-Data image into volume representation (vtk\-Image\-Data) where the foreground voxels are 1 and the background voxels are 0. \-Internally vtk\-Poly\-Data\-To\-Image\-Stencil is utilized as as \-M\-P\-I. \-The resultant image is saved to disk in metaimage file formats. vtk\-Marching\-Cubes is applied to these file formats, which are then conglomerated by the master process, and an output vtk file is outputted. \hypertarget{ApplyingVtkMarchingCubes_8cxx_abf4d3375ca506ee4e183fad5ff828be2}{\index{\-Applying\-Vtk\-Marching\-Cubes.\-cxx@{\-Applying\-Vtk\-Marching\-Cubes.\-cxx}!search@{search}}
+\index{search@{search}!ApplyingVtkMarchingCubes.cxx@{\-Applying\-Vtk\-Marching\-Cubes.\-cxx}}
 \subsubsection[{search}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf search} (
 \begin{DoxyParamCaption}
 \item[{std\-::string}]{curr\-\_\-directory, }
 \item[{std\-::string}]{extension}
 \end{DoxyParamCaption}
-)}}\label{PolyDataToImageData_8cxx_abf4d3375ca506ee4e183fad5ff828be2}
+)}}\label{ApplyingVtkMarchingCubes_8cxx_abf4d3375ca506ee4e183fad5ff828be2}
 \-This recursive search algorithm function will be used later to find the vtk file in the directory. \-The user is to place the vtk file in the build directory, and this function will find it and output it. 

@@ -16,14 +16,14 @@
 * 
 */
 /**
-* @file PolyDataToImageData.cxx
+* @file ApplyingVtkMarchingCubes.cxx
 * @author Naoki Eto
-* @date August 11, 2013
+* @date August 12, 2013
 * @brief This program gets the VTK file,  divides up it up, and performs MPI. 
 *        It convert each piece to metaimage data so that vtkMarchingCubes 
 *        class can be applied, apply marching cubes to each process, outputs 
-*        the resulting vtk data, and then conglomerates the data into 1 vtk 
-*        file.
+*        the resulting vtk data as temporary files, and then conglomerates the 
+*        data in the temporary files into 1 vtk file.
 * @param[in] number of processes - number of processes for MPI (look at README 
              for more information)
 * @param[in] argv[1] - the output's filename
@@ -64,7 +64,6 @@
 /* holds search results for the vtk file */
 std::vector<std::string> results;
 
-
 /**
 * This recursive search algorithm function will be used later to find the vtk 
 * file in the directory. The user is to place the vtk file in the build 
@@ -95,7 +94,6 @@ void search(std::string curr_directory, std::string extension){
  * files are outputted. These temporary files are then conglomerated by 
  * the master process, and an output vtk file is outputted.
  */
-
 int main(int argc, char *argv[])
 {
     /* The vtk file extension we want to search for */
@@ -295,9 +293,9 @@ int main(int argc, char *argv[])
         vtkPolyDataNormals *triangleCellNormals= vtkPolyDataNormals::New();
 
         #if VTK_MAJOR_VERSION <= 5
-	    triangleCellNormals->SetInput(smoothed_polys);
+	        triangleCellNormals->SetInput(smoothed_polys);
         #else
-	    triangleCellNormals->SetInputData(smoothed_polys);   
+	        triangleCellNormals->SetInputData(smoothed_polys);   
         #endif
 
         triangleCellNormals->ComputeCellNormalsOn();
@@ -309,9 +307,9 @@ int main(int argc, char *argv[])
         vtkPolyDataMapper *mapper= vtkPolyDataMapper::New();
 
         #if VTK_MAJOR_VERSION <= 5
-	    mapper->SetInput(triangleCellNormals->GetOutput()); // this is better for vis;-)
+	        mapper->SetInput(triangleCellNormals->GetOutput()); // this is better for vis;-)
         #else
-	    mapper->SetInputConnection(triangleCellNormals->GetOutputPort()); // this is better for vis;-)      
+	        mapper->SetInputConnection(triangleCellNormals->GetOutputPort()); // this is better for vis;-)      
         #endif
 
         mapper->ScalarVisibilityOn(); // show colour 
