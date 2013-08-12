@@ -1,3 +1,36 @@
+/**
+* Do whatever you want with public license
+* Version 1, August 11, 2013
+*
+* Copyright (C) 2013 Naoki Eto <neto@lbl.gov>
+*
+* Everyone is permitted to copy and distribute verbatim or modified
+* copies of this license document, and changing it is allowed as long
+* as the name is changed.
+*
+* Do whatever you want with the public license
+*
+* TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+*
+* 0. You just do what you want to do.
+* 
+*/
+/**
+* @file PolyDataToImageData.cxx
+* @author Naoki Eto
+* @date August 11, 2013
+* @brief This program gets the VTK file,  divides up it up, and performs MPI. 
+*        It convert each piece to metaimage data so that vtkMarchingCubes 
+*        class can be applied, apply marching cubes to each process, outputs 
+*        the resulting vtk data, and then conglomerates the data into 1 vtk 
+*        file.
+* @param[in] number of processes - number of processes for MPI (look at README 
+             for more information)
+* @param[in] argv[1] - the output's filename
+* @param[out] pWriter - vtkPolyData file with the output's filename
+* @return - EXIT_SUCCESS at the end
+*/
+
 #include <unistd.h>
 #include <dirent.h>
 #include <vector>
@@ -30,10 +63,15 @@
 #include <mpi.h>
 #include <stdio.h>
 
-// holds search results
+/* holds search results for the vtk file */
 std::vector<std::string> results;
 
-// recursive search algorithm
+
+/**
+* This recursive search algorithm function will be used later to find the vtk 
+* file in the directory. The user is to place the vtk file in the build 
+* directory, and this function will find it and output it.
+*/
 void search(std::string curr_directory, std::string extension){
 	DIR* dir_point = opendir(curr_directory.c_str());
 	dirent* entry = readdir(dir_point);
@@ -45,55 +83,68 @@ void search(std::string curr_directory, std::string extension){
 		if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
             // add filename to results vector
 			results.push_back(fname);
-
 		entry = readdir(dir_point);
 	}
 	return;
 }
 
 /**
- * This program converts a vtkPolyData image into volume representation (vtkImageData) 
- * where the foreground voxels are 1 and the background voxels are 0. Internally 
- * vtkPolyDataToImageStencil is utilized. The resultant image is saved to disk in 
- * metaimage file formats.
+ * This program converts a vtkPolyData image into volume representation 
+ * (vtkImageData) where the foreground voxels are 1 and the background 
+ * voxels are 0. Internally vtkPolyDataToImageStencil is utilized. The 
+ * resultant image is saved to disk in metaimage file formats.
  */
 
 int main(int argc, char *argv[])
 {
-
-    int NumOfCharPD = 23;
-
-    char strPD[NumOfCharPD];
-
-    sprintf(strPD, "ShrimpChowFun.vtk");
-
+    /* The vtk file extension we want to search for */
     std::string extension;
     extension = "vtk";
 
-	// setup search parameters
+	// Setup search parameters
 	std::string curr_directory = get_current_dir_name();
 	search(curr_directory, extension);
     std::string result = results[0];
+
+    /* This is where the vtk file name result is */
 	const char * c = result.c_str();
 
+    /* Number of processes */
     static int size;
 
+    /* Rank of process */
     int rank;
 
     MPI_Status status;
 
+    // Initializing MPI
     MPI_Init (&argc, &argv);
 
+    /* The master process will be of rank 0 */
     int MASTER = 0;
 
-    /*DETERMINE TOTAL NUMBER OF PROCESSORS*/
+    // Figure out total amount of processors
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    /*DETERMINE RANK OF THIS PROCESSOR*/
+    // Figure out the rank of this processor
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
+    /* This is for the temporary file names created. It contains the number 
+       of characters in the temporary filename "ShrimpChowFun#.vtk" */
+    int NumOfCharPD = 18;
+
+    // figure out how many characters are in the temporary file name, 
+    // i.e. "ShrimpChowFun128475.vtk"
+    if(rank >= 1)
+        int NumOfCharPD += log10(rank);
+
+    char strPD[NumOfCharPD];
+
+    // If not master process, do the vtkMarchingCubes implementation
     if (rank >= 1)
     {
+        // The vtkPolyDataReader to read the input vtk file in the build
+        // directory
         vtkPolyDataReader *reader = vtkPolyDataReader::New();
         reader->SetFileName(c);
         reader->Update();
@@ -101,18 +152,22 @@ int main(int argc, char *argv[])
         vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    
 
         reader->Update();
-        double spacing[3]; // desired volume spacing
+        /* desired volume spacing */
+        double spacing[3];
         spacing[0] = 0.1;
         spacing[1] = 0.1;
         spacing[2] = 0.1;
         whiteImage->SetSpacing(spacing);
 
+        /* The bounds that this processor will deal with in the vtk file */
         double bounds[6];
 
         // cut the corresponding white image and set the background:
         vtkSmartPointer<vtkImageStencil> imgstenc = vtkSmartPointer<vtkImageStencil>::New();
         reader->Update();
 
+        // Each processor will work with a different piece of vtk data. It's basically just 
+        // a rectangular prism of data
         bounds[0] = -10.0 + 20.0 * double(rank - 1.0) / double(size - 1);
         bounds[1] = -10.0 + 20.0 * double(rank) / double(size - 1);
         bounds[2] = -10;
@@ -120,16 +175,16 @@ int main(int argc, char *argv[])
         bounds[4] = -10;
         bounds[5] = 10;
 
-        //reader->Update();
-        // compute dimensions
+        /* compute dimensions */
         int dim[3];
         for (int i = 0; i < 3; i++)
         {
-        dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
+            dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
         }
         whiteImage->SetDimensions(dim);
         whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
 
+        /* compute the origin */
         double origin[3];
         origin[0] = bounds[0] + spacing[0]/10;
         origin[1] = bounds[2] + spacing[1]/10;
@@ -149,12 +204,12 @@ int main(int argc, char *argv[])
         vtkIdType count = whiteImage->GetNumberOfPoints();
         for (vtkIdType i = 0; i < count; ++i)
         {
-	    whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
+	        whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
         }
 
         // polygonal data --> image stencil:
         vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-        //pol2stenc->Update();
+
         #if VTK_MAJOR_VERSION <= 5
 	       pol2stenc->SetInput(reader->GetOutput());
         #else
@@ -263,15 +318,8 @@ int main(int argc, char *argv[])
         mapper->SetScalarModeToUsePointData(); // the smoother error relates to the verts
         mapper->SetLookupTable(colorLookupTable);
 
+        /* vtkPolyDataWriter for temporary file */
         vtkPolyDataWriter *PDwriter = vtkPolyDataWriter::New();
-
-        // figure out how many characters are the file names
-
-        NumOfCharPD = 18;
-
-        NumOfCharPD = log10(rank) + 18;
-
-        strPD[NumOfCharPD];
 
         sprintf(strPD, "ShrimpChowFun%d.vtk", rank);
 
@@ -285,30 +333,30 @@ int main(int argc, char *argv[])
 
         PDwriter->Write();
 
+        // Send this temporary file name to the master process
         MPI_Send(strPD, NumOfCharPD, MPI_CHAR, 0, 1, MPI_COMM_WORLD);
     }
 
     // Master
     if (rank == MASTER)
     {
+        // Receive all the temporary file names
         for(int i = 1; i < size; i++)
         {
             MPI_Recv(strPD, NumOfCharPD, MPI_CHAR, i, 1, MPI_COMM_WORLD, &status);
         }
         
-        // to append each piece into 1 big vtk file
+        /* to append each piece into 1 big vtk file */
         vtkAppendPolyData *appendWriter = vtkAppendPolyData::New();
 
+        // Go through the temporary files and append the vtk data
         for(int k = 1; k < size; k++)
         {
             vtkPolyData *inputNum = vtkPolyData::New();
             vtkPolyDataReader *reader = vtkPolyDataReader::New();
 
-            int NumOfCharPDMASTER;
-
-            NumOfCharPDMASTER = 19;
-
-            NumOfCharPDMASTER = log10(k) + 19;
+            // number of characters in file name
+            int NumOfCharPDMASTER = log10(k) + 18;
 
             char strPDMASTER[NumOfCharPDMASTER];
 
@@ -323,6 +371,7 @@ int main(int argc, char *argv[])
                 appendWriter->AddInputData(inputNum);
             #endif
 
+            // remove temporary files
             remove(strPDMASTER);
 
             appendWriter->Update();
@@ -337,6 +386,7 @@ int main(int argc, char *argv[])
             pWriter->SetInputData(appendWriter->GetOutputPort());
         #endif
 
+        // output vtk file
         pWriter->Write();
 
         // Remove any duplicate points.
