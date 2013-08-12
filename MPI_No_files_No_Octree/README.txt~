@@ -1,7 +1,7 @@
 This directory attempts to do MPI on marching cubes using the following
 steps:
 
-get the VTK file,  divide up it up and do MPI, convert each piece to metaimage data, apply marching cubes to each process, output the resulting vtk data, and then conglomerate the files into 1 vtk file.
+I find the vtk file, start MPI, divide up the vtk file, convert each piece to mhd, pass it through vtkMarchingCubes, send the resulting polydata to the master process (rank 0), which waits for all the processes. Then, the processes are conglomerated in serial and an vtk file is outputted.
 
 To run this program, we would go 
 to the PolyDataToImageData/build directory, add in the vtk file, and then
