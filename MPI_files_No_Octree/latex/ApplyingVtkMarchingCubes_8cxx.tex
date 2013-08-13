@@ -3,7 +3,7 @@
 }
 
 
-\-This program gets the \-V\-T\-K file, divides up it up, and performs \-M\-P\-I. \-It convert each piece to metaimage data so that vtk\-Marching\-Cubes class can be applied, apply marching cubes to each process, outputs the resulting vtk data as temporary files, and then conglomerates the data in the temporary files into 1 vtk file.  
+\-This program gets the \-V\-T\-K file, divides up it up, and performs \-M\-P\-I. \-It convert each piece to metaimage data so that vtk\-Marching\-Cubes class can be applied, apply marching cubes to each process, outputs the resulting vtk data as temporary files, and then the master processor (with rank 0) conglomerates the data in the temporary files into 1 vtk file.  
 
 
 {\ttfamily \#include $<$dirent.\-h$>$}\*
@@ -49,7 +49,7 @@ int \hyperlink{ApplyingVtkMarchingCubes_8cxx_a0ddf1224851353fc92bfbff6f499fa97}{
 
 
 \subsection{\-Detailed \-Description}
-\-This program gets the \-V\-T\-K file, divides up it up, and performs \-M\-P\-I. \-It convert each piece to metaimage data so that vtk\-Marching\-Cubes class can be applied, apply marching cubes to each process, outputs the resulting vtk data as temporary files, and then conglomerates the data in the temporary files into 1 vtk file. \-Do whatever you want with public license \-Version 1, \-August 11, 2013
+\-This program gets the \-V\-T\-K file, divides up it up, and performs \-M\-P\-I. \-It convert each piece to metaimage data so that vtk\-Marching\-Cubes class can be applied, apply marching cubes to each process, outputs the resulting vtk data as temporary files, and then the master processor (with rank 0) conglomerates the data in the temporary files into 1 vtk file. \-Do whatever you want with public license \-Version 1, \-August 12, 2013
 
 \-Copyright (\-C) 2013 \-Naoki \-Eto $<$\href{mailto:neto@lbl.gov}{\tt neto@lbl.\-gov}$>$
 

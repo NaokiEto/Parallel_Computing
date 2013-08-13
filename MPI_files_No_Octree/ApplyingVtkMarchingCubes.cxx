@@ -1,6 +1,6 @@
 /**
 * Do whatever you want with public license
-* Version 1, August 11, 2013
+* Version 1, August 12, 2013
 *
 * Copyright (C) 2013 Naoki Eto <neto@lbl.gov>
 *
@@ -22,8 +22,9 @@
 * @brief This program gets the VTK file,  divides up it up, and performs MPI. 
 *        It convert each piece to metaimage data so that vtkMarchingCubes 
 *        class can be applied, apply marching cubes to each process, outputs 
-*        the resulting vtk data as temporary files, and then conglomerates the 
-*        data in the temporary files into 1 vtk file.
+*        the resulting vtk data as temporary files, and then the master 
+*        processor (with rank 0) conglomerates the data in the temporary files 
+*        into 1 vtk file.
 * @param[in] number of processes - number of processes for MPI (look at README 
              for more information)
 * @param[in] argv[1] - the output's filename
@@ -88,7 +89,7 @@ void search(std::string curr_directory, std::string extension){
 /**
  * This program converts a vtkPolyData image into volume representation 
  * (vtkImageData) where the foreground voxels are 1 and the background 
- * voxels are 0. Internally vtkPolyDataToImageStencil is utilized as 
+ * voxels are 0. Internally vtkPolyDataToImageStencil is utilized as wells
  * as MPI. The resultant image is saved to disk in metaimage file formats. 
  * vtkMarchingCubes is applied to these file formats, and temporary vtk
  * files are outputted. These temporary files are then conglomerated by 
@@ -220,7 +221,6 @@ int main(int argc, char *argv[])
         pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
         pol2stenc->Update();
 
-        //imgstenc->Update();
         #if VTK_MAJOR_VERSION <= 5
 	        imgstenc->SetInput(whiteImage);
 	        imgstenc->SetStencil(pol2stenc->GetOutput());
@@ -354,7 +354,7 @@ int main(int argc, char *argv[])
             vtkPolyData *inputNum = vtkPolyData::New();
             vtkPolyDataReader *reader = vtkPolyDataReader::New();
 
-            // number of characters in file name
+            /* number of characters in file name */
             int NumOfCharPDMASTER = log10(k) + 18;
 
             char strPDMASTER[NumOfCharPDMASTER];
@@ -376,6 +376,7 @@ int main(int argc, char *argv[])
             appendWriter->Update();
         }
 
+        // output vtkpolydata file
         vtkPolyDataWriter *pWriter = vtkPolyDataWriter::New();
         pWriter->SetFileName(argv[1]);
 
@@ -385,7 +386,6 @@ int main(int argc, char *argv[])
             pWriter->SetInputData(appendWriter->GetOutputPort());
         #endif
 
-        // output vtk file
         pWriter->Write();
 
         // Remove any duplicate points.
