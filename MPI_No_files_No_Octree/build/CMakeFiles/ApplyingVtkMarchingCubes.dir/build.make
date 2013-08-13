@@ -35,10 +35,10 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData
+CMAKE_SOURCE_DIR = /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/build
+CMAKE_BINARY_DIR = /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/ApplyingVtkMarchingCubes.dir/depend.make
@@ -51,17 +51,17 @@ include CMakeFiles/ApplyingVtkMarchingCubes.dir/flags.make
 
 CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.o: CMakeFiles/ApplyingVtkMarchingCubes.dir/flags.make
 CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.o: ../ApplyingVtkMarchingCubes.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.o"
-	mpicxx   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.o -c /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/ApplyingVtkMarchingCubes.cxx
+	mpicxx   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.o -c /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/ApplyingVtkMarchingCubes.cxx
 
 CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.i"
-	mpicxx  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/ApplyingVtkMarchingCubes.cxx > CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.i
+	mpicxx  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/ApplyingVtkMarchingCubes.cxx > CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.i
 
 CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.s"
-	mpicxx  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/ApplyingVtkMarchingCubes.cxx -o CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.s
+	mpicxx  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/ApplyingVtkMarchingCubes.cxx -o CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.s
 
 CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.o.requires:
 .PHONY : CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.o.requires
@@ -125,6 +125,6 @@ CMakeFiles/ApplyingVtkMarchingCubes.dir/clean:
 .PHONY : CMakeFiles/ApplyingVtkMarchingCubes.dir/clean
 
 CMakeFiles/ApplyingVtkMarchingCubes.dir/depend:
-	cd /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/build /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/build /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/build/CMakeFiles/ApplyingVtkMarchingCubes.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/build /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/build /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/build/CMakeFiles/ApplyingVtkMarchingCubes.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ApplyingVtkMarchingCubes.dir/depend
 

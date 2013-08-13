@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/ApplyingVtkMarchingCubes.cxx
+/home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/ApplyingVtkMarchingCubes.cxx
 dirent.h
 -
 vector

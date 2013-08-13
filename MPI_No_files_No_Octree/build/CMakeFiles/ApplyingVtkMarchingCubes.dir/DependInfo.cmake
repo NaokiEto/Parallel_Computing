@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/PolyDataToImageData.cxx" "/home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/PolyDataToImageData/build/CMakeFiles/PolyDataToImageData.dir/PolyDataToImageData.cxx.o"
+  "/home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/ApplyingVtkMarchingCubes.cxx" "/home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/build/CMakeFiles/ApplyingVtkMarchingCubes.dir/ApplyingVtkMarchingCubes.cxx.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 
