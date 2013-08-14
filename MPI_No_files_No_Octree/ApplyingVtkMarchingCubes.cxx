@@ -61,6 +61,7 @@
 
 #include <mpi.h>
 #include <stdio.h>
+#include <vt_user.h>
 
 // holds search results
 std::vector<std::string> results;
@@ -101,13 +102,22 @@ int main(int argc, char *argv[])
     std::string extension;
     extension = "vtk";
 
+    VT_ON();
+    VT_USER_START("Region 1");
+
 	// setup search parameters
 	std::string curr_directory = get_current_dir_name();
 	search(curr_directory, extension);
     std::string result = results[0];
 
+    VT_USER_END("Region 1");
+    VT_OFF();
+
     /* This is where the vtk file name result is */
 	const char * c = result.c_str();
+
+    VT_ON();
+    VT_USER_START("Region 2");
 
     vtkMPIController* controller = vtkMPIController::New();
 
@@ -120,12 +130,18 @@ int main(int argc, char *argv[])
     /* Figure out the rank of this processor */
     int size = controller->GetNumberOfProcesses();
 
+    VT_USER_END("Region 2");
+    VT_OFF();
+
     /* The master process will be of rank 0 */
     int MASTER = 0;
 
     // If not master process, do the vtkMarchingCubes implementation
     if (rank >= 1)
     {
+        VT_ON();
+        VT_USER_START("Region 3");        
+
         // The vtkPolyDataReader to read the input vtk file in the build
         // directory
         vtkPolyDataReader *reader = vtkPolyDataReader::New();
@@ -188,7 +204,7 @@ int main(int argc, char *argv[])
         vtkIdType count = whiteImage->GetNumberOfPoints();
         for (vtkIdType i = 0; i < count; ++i)
         {
-	    whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
+	        whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
         }
 
         // polygonal data --> image stencil:
@@ -288,6 +304,9 @@ int main(int argc, char *argv[])
         triangleCellNormals->AutoOrientNormalsOn();
         triangleCellNormals->Update(); // creates vtkPolyData
 
+        VT_USER_END("Region 3");
+        VT_OFF();
+
         vtkPolyDataMapper *mapper= vtkPolyDataMapper::New();
 
         #if VTK_MAJOR_VERSION <= 5
@@ -301,19 +320,28 @@ int main(int argc, char *argv[])
         mapper->SetScalarModeToUsePointData(); // the smoother error relates to the verts
         mapper->SetLookupTable(colorLookupTable);
 
+        VT_ON();
+        VT_USER_START("Region 4");
+
         // send the vtkPolyData to the master process
         #if VTK_MAJOR_VERSION <= 5
             controller->Send(triangleCellNormals->GetOutput(), 0, 1);
         #else
             controller->Send(triangleCellNormals->GetOutputPort(), 0, 1);  
         #endif
+
+        VT_USER_END("Region 4");
+        VT_OFF();
     }
 
     // Master
     if (rank == MASTER)
-    {     
+    {   
         // to append each piece into 1 big vtk file
         vtkAppendPolyData *appendWriter = vtkAppendPolyData::New();
+
+        VT_ON();
+        VT_USER_START("Region 5");
 
         // go through the processes, and append
         for(int k = 1; k < size; k++)
@@ -341,6 +369,9 @@ int main(int argc, char *argv[])
 
         // output vtk file
         pWriter->Write();
+
+        VT_USER_END("Region 5");
+        VT_OFF();
 
         // Remove any duplicate points.
         vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();

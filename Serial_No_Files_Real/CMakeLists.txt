@@ -3,13 +3,12 @@ cmake_minimum_required(VERSION 2.8)
 
 PROJECT(ApplyingVtkMarchingCubes)
 
-
 set(VAMPIRTRACE_ROOT $ENV{HOME}/Downloads/VampirTrace-5.14.4)
 set(VAMPIRTRACE_LIBRARIES ${VAMPIRTRACE_ROOT}/vtlib/.libs/libvt.so)
 
 include_directories(${VAMPIRTRACE_ROOT}/include)
-add_definitions( -DVTRACE )
 
+add_definitions( -DVTRACE )
 
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
