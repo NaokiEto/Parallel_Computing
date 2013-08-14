@@ -91,9 +91,9 @@ void search(std::string curr_directory, std::string extension){
  * This program converts a vtkPolyData image into volume representation 
  * (vtkImageData) where the foreground voxels are 1 and the background 
  * voxels are 0. Internally vtkPolyDataToImageStencil is utilized as 
- * as MPI. The resultant image is saved as metaimage data. vtkMarchingCubes 
- * is applied to these pieces of data, which are then conglomerated by the 
- * master process, and an output vtk file is outputted.
+ * as MPI. The resultant image is saved to disk in metaimage file formats. 
+ * vtkMarchingCubes is applied to these file formats, which are then 
+ * conglomerated by the master process, and an output vtk file is outputted.
  */
 int main(int argc, char *argv[])
 {
