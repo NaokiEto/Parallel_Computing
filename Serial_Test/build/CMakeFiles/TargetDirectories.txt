@@ -1,1 +1,0 @@
-/home/lakers/Documents/Parallel_Computing/Serial_Test/build/CMakeFiles/ApplyingVtkMarchingCubes.dir
