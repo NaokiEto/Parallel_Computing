@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/lakers/Documents/Parallel_Computing/pthread_Real_no_files/PolyDataToImageData/PolyDataToImageData.cxx
+/home/lakers/Documents/Parallel_Computing/pthread_No_Files_Real/PolyDataToImageData.cxx
 unistd.h
 -
 iostream
