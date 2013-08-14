@@ -376,7 +376,7 @@ int main(int argc, char *argv[])
             appendWriter->Update();
         }
 
-        // output vtk file
+        // output vtkpolydata file
         vtkPolyDataWriter *pWriter = vtkPolyDataWriter::New();
         pWriter->SetFileName(argv[1]);
 
