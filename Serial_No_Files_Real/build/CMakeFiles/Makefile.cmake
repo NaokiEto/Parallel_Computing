@@ -8,16 +8,9 @@ SET(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 SET(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
   "../CMakeLists.txt"
-  "CMakeFiles/2.8.11.1/CMakeCCompiler.cmake"
-  "CMakeFiles/2.8.11.1/CMakeCXXCompiler.cmake"
-  "CMakeFiles/2.8.11.1/CMakeSystem.cmake"
-  "/usr/lib/vtk-5.8/CMake/vtkMakeInstantiator.cmake"
-  "/usr/lib/vtk-5.8/UseVTK.cmake"
-  "/usr/lib/vtk-5.8/VTKConfig.cmake"
-  "/usr/lib/vtk-5.8/VTKConfigQt.cmake"
-  "/usr/lib/vtk-5.8/VTKConfigVersion.cmake"
-  "/usr/lib/vtk-5.8/VTKTargets-debug.cmake"
-  "/usr/lib/vtk-5.8/VTKTargets.cmake"
+  "CMakeFiles/CMakeCCompiler.cmake"
+  "CMakeFiles/CMakeCXXCompiler.cmake"
+  "CMakeFiles/CMakeSystem.cmake"
   "/usr/local/share/cmake-2.8/Modules/CMakeCInformation.cmake"
   "/usr/local/share/cmake-2.8/Modules/CMakeCXXInformation.cmake"
   "/usr/local/share/cmake-2.8/Modules/CMakeCommonLanguageInclude.cmake"
@@ -33,6 +26,13 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "/usr/local/share/cmake-2.8/Modules/Platform/Linux-GNU.cmake"
   "/usr/local/share/cmake-2.8/Modules/Platform/Linux.cmake"
   "/usr/local/share/cmake-2.8/Modules/Platform/UnixPaths.cmake"
+  "/work/vtk/install/lib/vtk-5.10/CMake/vtkMakeInstantiator.cmake"
+  "/work/vtk/install/lib/vtk-5.10/UseVTK.cmake"
+  "/work/vtk/install/lib/vtk-5.10/VTKConfig.cmake"
+  "/work/vtk/install/lib/vtk-5.10/VTKConfigQt.cmake"
+  "/work/vtk/install/lib/vtk-5.10/VTKConfigVersion.cmake"
+  "/work/vtk/install/lib/vtk-5.10/VTKTargets-release.cmake"
+  "/work/vtk/install/lib/vtk-5.10/VTKTargets.cmake"
   )
 
 # The corresponding makefile is:
