@@ -1,4 +1,4 @@
-# Install script for directory: /home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree
+# Install script for directory: /home/users/neto/NaokiEto/Parallel_Computing/MPI_No_files_No_Octree
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,7 +38,7 @@ ELSE(CMAKE_INSTALL_COMPONENT)
   SET(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 ENDIF(CMAKE_INSTALL_COMPONENT)
 
-FILE(WRITE "/home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/build/${CMAKE_INSTALL_MANIFEST}" "")
+FILE(WRITE "/home/users/neto/NaokiEto/Parallel_Computing/MPI_No_files_No_Octree/build/${CMAKE_INSTALL_MANIFEST}" "")
 FOREACH(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  FILE(APPEND "/home/lakers/Documents/Parallel_Computing/MPI_No_files_No_Octree/build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
+  FILE(APPEND "/home/users/neto/NaokiEto/Parallel_Computing/MPI_No_files_No_Octree/build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
 ENDFOREACH(file)
