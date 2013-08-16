@@ -11,11 +11,6 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/CMakeCCompiler.cmake"
   "CMakeFiles/CMakeCXXCompiler.cmake"
   "CMakeFiles/CMakeSystem.cmake"
-  "/home/users/neto/VTK/CMake/vtkMakeInstantiator.cmake"
-  "/home/users/neto/VTK/UseVTK.cmake"
-  "/home/users/neto/VTK/VTKConfig.cmake"
-  "/home/users/neto/VTK/VTKConfigVersion.cmake"
-  "/home/users/neto/VTK/VTKTargets.cmake"
   "/usr/local/share/cmake-2.8/Modules/CMakeCCompiler.cmake.in"
   "/usr/local/share/cmake-2.8/Modules/CMakeCCompilerABI.c"
   "/usr/local/share/cmake-2.8/Modules/CMakeCInformation.cmake"
@@ -48,6 +43,12 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "/usr/local/share/cmake-2.8/Modules/Platform/Linux-GNU.cmake"
   "/usr/local/share/cmake-2.8/Modules/Platform/Linux.cmake"
   "/usr/local/share/cmake-2.8/Modules/Platform/UnixPaths.cmake"
+  "/work2/VTK5.10.1-install/lib/vtk-5.10/CMake/vtkMakeInstantiator.cmake"
+  "/work2/VTK5.10.1-install/lib/vtk-5.10/UseVTK.cmake"
+  "/work2/VTK5.10.1-install/lib/vtk-5.10/VTKConfig.cmake"
+  "/work2/VTK5.10.1-install/lib/vtk-5.10/VTKConfigVersion.cmake"
+  "/work2/VTK5.10.1-install/lib/vtk-5.10/VTKTargets-debug.cmake"
+  "/work2/VTK5.10.1-install/lib/vtk-5.10/VTKTargets.cmake"
   )
 
 # The corresponding makefile is:

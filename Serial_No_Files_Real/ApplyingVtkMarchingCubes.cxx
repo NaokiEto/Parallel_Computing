@@ -55,7 +55,7 @@
 #include <vtkRenderWindowInteractor.h>
 
 #include <stdio.h>
-#include <vt_user.h>
+#include "/work2/vt-system-install/include/vampirtrace/vt_user.h"
 
 /* holds search results for the vtk file */
 std::vector<std::string> results;

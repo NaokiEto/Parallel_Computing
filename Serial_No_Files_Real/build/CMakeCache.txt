@@ -161,16 +161,6 @@ CMAKE_USE_RELATIVE_PATHS:BOOL=OFF
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//Location of Tcl library imported from VTK.  This may mean your
-// project is depending on VTK to get this setting.  Consider using
-// FindTCL.cmake.
-TCL_LIBRARY:FILEPATH=
-
-//Location of Tk library imported from VTK.  This may mean your
-// project is depending on VTK to get this setting.  Consider using
-// FindTCL.cmake.
-TK_LIBRARY:FILEPATH=
-
 
 ########################
 # INTERNAL cache entries
@@ -299,8 +289,4 @@ CMAKE_UNAME:INTERNAL=/bin/uname
 CMAKE_USE_RELATIVE_PATHS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: TCL_LIBRARY
-TCL_LIBRARY-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: TK_LIBRARY
-TK_LIBRARY-ADVANCED:INTERNAL=1
 

@@ -2,21 +2,19 @@ cmake_minimum_required(VERSION 2.8)
 
 PROJECT(ApplyingVtkMarchingCubes)
 
-set(VAMPIRTRACE_ROOT $ENV{HOME}/NaokiEto/VampirTrace-5.14.4)
-set(VAMPIRTRACE_LIBRARIES ${VAMPIRTRACE_ROOT}/lib/libvt-mpi.so
-                          ${VAMPIRTRACE_ROOT}/lib/libotfaux.so)
+set(VAMPIRTRACE_ROOT $ENV{ROOT}/work2/vt-system-install)
+set(VAMPIRTRACE_LIBRARIES ${VAMPIRTRACE_ROOT}/lib/libotfaux.so
+                          ${VAMPIRTRACE_ROOT}/lib/libvt-mpi.so)
 
 include_directories(${VAMPIRTRACE_ROOT}/include)
 add_definitions( -DVTRACE )
 
-set(VTK_DIR $ENV{HOME}/VTK)
+set(VTK_DIR $ENV{ROOT}/work2/VTK5.10.1-install/lib/vtk-5.10)
 
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
 add_executable(ApplyingVtkMarchingCubes ApplyingVtkMarchingCubes.cxx)
-
-#set(MPI_DIR $ENV{HOME}/mpich2-1.4.1p1-install)
 
 SET(CMAKE_C_COMPILER mpicc-vt)
 
