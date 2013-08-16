@@ -59,7 +59,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkMPIController.h>
 
-#include <mpi.h>
+#include "/home/users/neto/mpich2-1.4.1p1-install/include/mpi.h"
 #include <stdio.h>
 #include <vt_user.h>
 

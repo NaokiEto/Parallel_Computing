@@ -55,7 +55,6 @@
 #include <vtkRenderWindowInteractor.h>
 
 #include <stdio.h>
-
 #include <vt_user.h>
 
 /* holds search results for the vtk file */
@@ -204,7 +203,7 @@ int main(int argc, char *argv[])
 
     // Pass the meta image data to the vtkMarchingCubes
     vtkExtractVOI *voi = vtkExtractVOI::New(); 
-    voi->SetInput(imgstenc->GetOutput());  
+    voi->SetInputData(imgstenc->GetOutput());  
     voi->SetSampleRate(1,1,1);
 
     voi->Update();
@@ -215,7 +214,7 @@ int main(int argc, char *argv[])
     //Prepare surface generation
     vtkMarchingCubes *contour = vtkMarchingCubes::New(); //for label images
 
-    contour->SetInput( voi->GetOutput() );
+    contour->SetInputData( voi->GetOutput() );
 
     // choose one label
     int index = 31;
@@ -302,7 +301,7 @@ int main(int argc, char *argv[])
     #if VTK_MAJOR_VERSION <= 5
 	    pWriter->SetInput(triangleCellNormals->GetOutput());
     #else
-	    pWriter->SetInputData(triangleCellNormals->GetOutputPort());  
+	    pWriter->SetInputConnection(triangleCellNormals->GetOutputPort());  
     #endif
 
     pWriter->Write();

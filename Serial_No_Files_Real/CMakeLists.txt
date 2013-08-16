@@ -10,7 +10,7 @@ include_directories(${VAMPIRTRACE_ROOT}/include)
 
 add_definitions( -DVTRACE )
 
-set(VTK_DIR /work/vtk/install/lib/vtk-5.10)
+set(VTK_DIR $ENV{HOME}/VTK5.10.1)
 
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})

@@ -9,14 +9,17 @@ set(VAMPIRTRACE_LIBRARIES ${VAMPIRTRACE_ROOT}/lib/libvt-mpi.so
 include_directories(${VAMPIRTRACE_ROOT}/include)
 add_definitions( -DVTRACE )
 
-set(VTK_DIR $ENV{HOME}/Downloads/vtk-5.8)
+set(VTK_DIR $ENV{HOME}/VTK)
 
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
 add_executable(ApplyingVtkMarchingCubes ApplyingVtkMarchingCubes.cxx)
 
+#set(MPI_DIR $ENV{HOME}/mpich2-1.4.1p1-install)
+
 SET(CMAKE_C_COMPILER mpicc-vt)
+
 SET(CMAKE_CXX_COMPILER mpicxx)
 
 target_link_libraries(ApplyingVtkMarchingCubes ${VAMPIRTRACE_LIBRARIES})
