@@ -133,9 +133,9 @@ int main(int argc, char *argv[])
 
     // desired volume spacing
     double spacing[3];
-    spacing[0] = 0.5;
-    spacing[1] = 0.5;
-    spacing[2] = 0.5;
+    spacing[0] = 0.1;
+    spacing[1] = 0.1;
+    spacing[2] = 0.1;
     whiteImage->SetSpacing(spacing);
 
     /* compute dimensions */
