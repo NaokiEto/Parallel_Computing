@@ -46,11 +46,14 @@ RM = /usr/local/bin/cmake -E remove -f
 # Escaping for special characters.
 EQUALS = =
 
+# The program to use to edit the cache.
+CMAKE_EDIT_COMMAND = /usr/local/bin/ccmake
+
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/lakers/Documents/Parallel_Computing/MPI_files_No_Octree
+CMAKE_SOURCE_DIR = /home/users/neto/NaokiEto/Parallel_Computing/MPI_files_No_Octree
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/lakers/Documents/Parallel_Computing/MPI_files_No_Octree/build
+CMAKE_BINARY_DIR = /home/users/neto/NaokiEto/Parallel_Computing/MPI_files_No_Octree/build
 
 #=============================================================================
 # Target rules for target CMakeFiles/ApplyingVtkMarchingCubes.dir
@@ -59,7 +62,7 @@ CMAKE_BINARY_DIR = /home/lakers/Documents/Parallel_Computing/MPI_files_No_Octree
 CMakeFiles/ApplyingVtkMarchingCubes.dir/all:
 	$(MAKE) -f CMakeFiles/ApplyingVtkMarchingCubes.dir/build.make CMakeFiles/ApplyingVtkMarchingCubes.dir/depend
 	$(MAKE) -f CMakeFiles/ApplyingVtkMarchingCubes.dir/build.make CMakeFiles/ApplyingVtkMarchingCubes.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/lakers/Documents/Parallel_Computing/MPI_files_No_Octree/build/CMakeFiles  1
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/users/neto/NaokiEto/Parallel_Computing/MPI_files_No_Octree/build/CMakeFiles  1
 	@echo "Built target ApplyingVtkMarchingCubes"
 .PHONY : CMakeFiles/ApplyingVtkMarchingCubes.dir/all
 
@@ -69,9 +72,9 @@ all: CMakeFiles/ApplyingVtkMarchingCubes.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/ApplyingVtkMarchingCubes.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lakers/Documents/Parallel_Computing/MPI_files_No_Octree/build/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/users/neto/NaokiEto/Parallel_Computing/MPI_files_No_Octree/build/CMakeFiles 1
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/ApplyingVtkMarchingCubes.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lakers/Documents/Parallel_Computing/MPI_files_No_Octree/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/users/neto/NaokiEto/Parallel_Computing/MPI_files_No_Octree/build/CMakeFiles 0
 .PHONY : CMakeFiles/ApplyingVtkMarchingCubes.dir/rule
 
 # Convenience name for target.

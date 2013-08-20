@@ -1,22 +1,23 @@
 Determining if the pthread_create exist failed with the following output:
-Change Dir: /home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp
+Change Dir: /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp
 
-Run Build Command:/usr/bin/make "cmTryCompileExec401492785/fast"
-/usr/bin/make -f CMakeFiles/cmTryCompileExec401492785.dir/build.make CMakeFiles/cmTryCompileExec401492785.dir/build
-make[1]: Entering directory `/home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
-/usr/local/bin/cmake -E cmake_progress_report /home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
-Building C object CMakeFiles/cmTryCompileExec401492785.dir/CheckSymbolExists.c.o
-/usr/bin/cc    -o CMakeFiles/cmTryCompileExec401492785.dir/CheckSymbolExists.c.o   -c /home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTryCompileExec401492785
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec401492785.dir/link.txt --verbose=1
-/usr/bin/cc          CMakeFiles/cmTryCompileExec401492785.dir/CheckSymbolExists.c.o  -o cmTryCompileExec401492785 -rdynamic 
-CMakeFiles/cmTryCompileExec401492785.dir/CheckSymbolExists.c.o:CheckSymbolExists.c:function main: error: undefined reference to 'pthread_create'
+Run Build Command:/usr/bin/make "cmTryCompileExec1346850577/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1346850577.dir/build.make CMakeFiles/cmTryCompileExec1346850577.dir/build
+make[1]: Entering directory `/home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1346850577.dir/CheckSymbolExists.c.o
+/usr/bin/gcc    -o CMakeFiles/cmTryCompileExec1346850577.dir/CheckSymbolExists.c.o   -c /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec1346850577
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1346850577.dir/link.txt --verbose=1
+/usr/bin/gcc          CMakeFiles/cmTryCompileExec1346850577.dir/CheckSymbolExists.c.o  -o cmTryCompileExec1346850577 -rdynamic 
+CMakeFiles/cmTryCompileExec1346850577.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
 collect2: ld returned 1 exit status
-make[1]: Leaving directory `/home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
-make[1]: *** [cmTryCompileExec401492785] Error 1
-make: *** [cmTryCompileExec401492785/fast] Error 2
+make[1]: Leaving directory `/home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec1346850577] Error 1
+make: *** [cmTryCompileExec1346850577/fast] Error 2
 
-File /home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+File /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
 #include <pthread.h>
 
@@ -32,22 +33,74 @@ int main(int argc, char** argv)
 }
 
 Determining if the function pthread_create exists in the pthreads failed with the following output:
-Change Dir: /home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp
+Change Dir: /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp
 
-Run Build Command:/usr/bin/make "cmTryCompileExec512020411/fast"
-/usr/bin/make -f CMakeFiles/cmTryCompileExec512020411.dir/build.make CMakeFiles/cmTryCompileExec512020411.dir/build
-make[1]: Entering directory `/home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
-/usr/local/bin/cmake -E cmake_progress_report /home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
-Building C object CMakeFiles/cmTryCompileExec512020411.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec512020411.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-2.8/Modules/CheckFunctionExists.c
-Linking C executable cmTryCompileExec512020411
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec512020411.dir/link.txt --verbose=1
-/usr/bin/cc      -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec512020411.dir/CheckFunctionExists.c.o  -o cmTryCompileExec512020411 -rdynamic -lpthreads 
-/usr/bin/ld: error: cannot find -lpthreads
-CMakeFiles/cmTryCompileExec512020411.dir/CheckFunctionExists.c.o:CheckFunctionExists.c:function main: error: undefined reference to 'pthread_create'
+Run Build Command:/usr/bin/make "cmTryCompileExec2971212337/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2971212337.dir/build.make CMakeFiles/cmTryCompileExec2971212337.dir/build
+make[1]: Entering directory `/home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2971212337.dir/CheckFunctionExists.c.o
+/usr/bin/gcc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec2971212337.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec2971212337
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2971212337.dir/link.txt --verbose=1
+/usr/bin/gcc      -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec2971212337.dir/CheckFunctionExists.c.o  -o cmTryCompileExec2971212337 -rdynamic -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
 collect2: ld returned 1 exit status
-make[1]: *** [cmTryCompileExec512020411] Error 1
-make[1]: Leaving directory `/home/lakers/Documents/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
-make: *** [cmTryCompileExec512020411/fast] Error 2
+make[1]: *** [cmTryCompileExec2971212337] Error 1
+make[1]: Leaving directory `/home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
+make: *** [cmTryCompileExec2971212337/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2826783732/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2826783732.dir/build.make CMakeFiles/cmTryCompileExec2826783732.dir/build
+make[1]: Entering directory `/home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2826783732.dir/CheckSymbolExists.c.o
+/usr/bin/gcc    -o CMakeFiles/cmTryCompileExec2826783732.dir/CheckSymbolExists.c.o   -c /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec2826783732
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2826783732.dir/link.txt --verbose=1
+/usr/bin/gcc          CMakeFiles/cmTryCompileExec2826783732.dir/CheckSymbolExists.c.o  -o cmTryCompileExec2826783732 -rdynamic 
+CMakeFiles/cmTryCompileExec2826783732.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: ld returned 1 exit status
+make[1]: Leaving directory `/home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec2826783732] Error 1
+make: *** [cmTryCompileExec2826783732/fast] Error 2
+
+File /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1475331069/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1475331069.dir/build.make CMakeFiles/cmTryCompileExec1475331069.dir/build
+make[1]: Entering directory `/home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1475331069.dir/CheckFunctionExists.c.o
+/usr/bin/gcc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec1475331069.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec1475331069
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1475331069.dir/link.txt --verbose=1
+/usr/bin/gcc      -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec1475331069.dir/CheckFunctionExists.c.o  -o cmTryCompileExec1475331069 -rdynamic -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: ld returned 1 exit status
+make[1]: *** [cmTryCompileExec1475331069] Error 1
+make[1]: Leaving directory `/home/users/neto/NaokiEto/Parallel_Computing/Pthreads_Files_Real/build/CMakeFiles/CMakeTmp'
+make: *** [cmTryCompileExec1475331069/fast] Error 2
 
 

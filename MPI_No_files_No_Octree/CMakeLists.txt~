@@ -3,10 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 PROJECT(ApplyingVtkMarchingCubes)
 
 set(VAMPIRTRACE_ROOT $ENV{ROOT}/work2/vt-system-install)
-set(VAMPIRTRACE_LIBRARIES ${VAMPIRTRACE_ROOT}/lib/libvt.so
-                          ${VAMPIRTRACE_ROOT}/lib/libotfaux.so
-                          ${VAMPIRTRACE_ROOT}/lib/libvt-mpi.so
-                          ${VAMPIRTRACE_ROOT}/lib/libopen-trace-format.so)
+set(VAMPIRTRACE_LIBRARIES ${VAMPIRTRACE_ROOT}/lib/libotfaux.so
+                          ${VAMPIRTRACE_ROOT}/lib/libvt-mpi.so)
 
 include_directories(${VAMPIRTRACE_ROOT}/include)
 add_definitions( -DVTRACE )

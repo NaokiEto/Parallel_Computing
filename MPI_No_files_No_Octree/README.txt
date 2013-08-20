@@ -10,6 +10,3 @@ do the command
 sudo mpirun -np 9 ./ApplyingVtkMarchingCubes AllStars.vtk
 
 which includes the master process (so there are 8 child processes in this example)
-
-
-

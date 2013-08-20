@@ -119,7 +119,7 @@ void process(int procRank, int procSize, vtkMPIController* procController)
     reader->SetFileName(c);
     reader->Update();
 
-    VT_USER_END("Region 1");
+    VT_USER_END("Region 2");
     VT_OFF();
 
     vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    

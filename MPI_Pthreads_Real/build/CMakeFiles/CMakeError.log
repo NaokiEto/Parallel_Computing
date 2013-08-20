@@ -1,22 +1,23 @@
 Determining if the pthread_create exist failed with the following output:
-Change Dir: /home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp
+Change Dir: /home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp
 
-Run Build Command:/usr/bin/make "cmTryCompileExec1432533104/fast"
-/usr/bin/make -f CMakeFiles/cmTryCompileExec1432533104.dir/build.make CMakeFiles/cmTryCompileExec1432533104.dir/build
-make[1]: Entering directory `/home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp'
-/usr/local/bin/cmake -E cmake_progress_report /home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
-Building C object CMakeFiles/cmTryCompileExec1432533104.dir/CheckSymbolExists.c.o
-/usr/bin/cc    -o CMakeFiles/cmTryCompileExec1432533104.dir/CheckSymbolExists.c.o   -c /home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTryCompileExec1432533104
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1432533104.dir/link.txt --verbose=1
-/usr/bin/cc          CMakeFiles/cmTryCompileExec1432533104.dir/CheckSymbolExists.c.o  -o cmTryCompileExec1432533104 -rdynamic 
-CMakeFiles/cmTryCompileExec1432533104.dir/CheckSymbolExists.c.o:CheckSymbolExists.c:function main: error: undefined reference to 'pthread_create'
+Run Build Command:/usr/bin/make "cmTryCompileExec1505900070/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1505900070.dir/build.make CMakeFiles/cmTryCompileExec1505900070.dir/build
+make[1]: Entering directory `/home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1505900070.dir/CheckSymbolExists.c.o
+/usr/bin/gcc    -o CMakeFiles/cmTryCompileExec1505900070.dir/CheckSymbolExists.c.o   -c /home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec1505900070
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1505900070.dir/link.txt --verbose=1
+/usr/bin/gcc          CMakeFiles/cmTryCompileExec1505900070.dir/CheckSymbolExists.c.o  -o cmTryCompileExec1505900070 -rdynamic 
+CMakeFiles/cmTryCompileExec1505900070.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
 collect2: ld returned 1 exit status
-make[1]: Leaving directory `/home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp'
-make[1]: *** [cmTryCompileExec1432533104] Error 1
-make: *** [cmTryCompileExec1432533104/fast] Error 2
+make[1]: Leaving directory `/home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec1505900070] Error 1
+make: *** [cmTryCompileExec1505900070/fast] Error 2
 
-File /home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+File /home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
 #include <pthread.h>
 
@@ -32,22 +33,21 @@ int main(int argc, char** argv)
 }
 
 Determining if the function pthread_create exists in the pthreads failed with the following output:
-Change Dir: /home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp
+Change Dir: /home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp
 
-Run Build Command:/usr/bin/make "cmTryCompileExec1012270199/fast"
-/usr/bin/make -f CMakeFiles/cmTryCompileExec1012270199.dir/build.make CMakeFiles/cmTryCompileExec1012270199.dir/build
-make[1]: Entering directory `/home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp'
-/usr/local/bin/cmake -E cmake_progress_report /home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
-Building C object CMakeFiles/cmTryCompileExec1012270199.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec1012270199.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-2.8/Modules/CheckFunctionExists.c
-Linking C executable cmTryCompileExec1012270199
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1012270199.dir/link.txt --verbose=1
-/usr/bin/cc      -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec1012270199.dir/CheckFunctionExists.c.o  -o cmTryCompileExec1012270199 -rdynamic -lpthreads 
-/usr/bin/ld: error: cannot find -lpthreads
-CMakeFiles/cmTryCompileExec1012270199.dir/CheckFunctionExists.c.o:CheckFunctionExists.c:function main: error: undefined reference to 'pthread_create'
+Run Build Command:/usr/bin/make "cmTryCompileExec3650154357/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3650154357.dir/build.make CMakeFiles/cmTryCompileExec3650154357.dir/build
+make[1]: Entering directory `/home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3650154357.dir/CheckFunctionExists.c.o
+/usr/bin/gcc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec3650154357.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec3650154357
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3650154357.dir/link.txt --verbose=1
+/usr/bin/gcc      -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec3650154357.dir/CheckFunctionExists.c.o  -o cmTryCompileExec3650154357 -rdynamic -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
 collect2: ld returned 1 exit status
-make[1]: Leaving directory `/home/lakers/Documents/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp'
-make[1]: *** [cmTryCompileExec1012270199] Error 1
-make: *** [cmTryCompileExec1012270199/fast] Error 2
+make[1]: Leaving directory `/home/users/neto/NaokiEto/Parallel_Computing/MPI_Pthreads_Real/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec3650154357] Error 1
+make: *** [cmTryCompileExec3650154357/fast] Error 2
 
 
