@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
 
         VT_USER_END("Region 5");
         VT_OFF();
-
+/*
         // Remove any duplicate points.
         vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();
         cleanFilter->SetInputConnection(appendWriter->GetOutputPort());
@@ -370,6 +370,7 @@ int main(int argc, char *argv[])
         // Render and interact
         renderWindow->Render();
         renderWindowInteractor->Start();
+*/
     }
 
     controller->Finalize(); 
