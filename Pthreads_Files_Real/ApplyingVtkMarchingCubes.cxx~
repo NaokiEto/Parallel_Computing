@@ -63,14 +63,15 @@
 #include "/work2/vt-system-install/include/vampirtrace/vt_user.h"
 #include <stdio.h>
 #include <pthread.h>
+
 //#include "/work/naoki/openmpi-1.6.5/ompi/contrib/vt/vt/vtlib/vt_pthreadreg.h"
 
-//__VT_EXTERN_DECL int VT_pthread_create__(pthread_t* thread, const pthread_attr_t* attr,
+__VT_EXTERN_DECL int VT_pthread_create__(pthread_t* thread, const pthread_attr_t* attr,
                                void *(*start_routine)(void*), void* arg);
-//__VT_EXTERN_DECL int VT_pthread_join__(pthread_t thread, void** value_ptr);
+__VT_EXTERN_DECL int VT_pthread_join__(pthread_t thread, void** value_ptr);
 
-//#define pthread_create VT_pthread_create__
-//#define pthread_join VT_pthread_join__
+#define pthread_create VT_pthread_create__
+#define pthread_join VT_pthread_join__
 
 // holds search results
 std::vector<std::string> results;
@@ -335,6 +336,7 @@ int main(int argc, char *argv[])
 
 	// setup search parameters
 	std::string curr_directory = get_current_dir_name();
+
 	search(curr_directory, extension);
     std::string result = results[0];
 

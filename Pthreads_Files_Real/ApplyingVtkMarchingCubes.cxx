@@ -63,6 +63,7 @@
 #include "/work2/vt-system-install/include/vampirtrace/vt_user.h"
 #include <stdio.h>
 #include <pthread.h>
+
 //#include "/work/naoki/openmpi-1.6.5/ompi/contrib/vt/vt/vtlib/vt_pthreadreg.h"
 
 __VT_EXTERN_DECL int VT_pthread_create__(pthread_t* thread, const pthread_attr_t* attr,
@@ -335,6 +336,7 @@ int main(int argc, char *argv[])
 
 	// setup search parameters
 	std::string curr_directory = get_current_dir_name();
+
 	search(curr_directory, extension);
     std::string result = results[0];
 
@@ -411,7 +413,7 @@ int main(int argc, char *argv[])
 
     VT_USER_END("Region 5");
     VT_OFF();
-
+/*
     // Remove any duplicate points.
     vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();
     cleanFilter->SetInputConnection(appendWriter->GetOutputPort());
@@ -438,6 +440,6 @@ int main(int argc, char *argv[])
     // Render and interact
     renderWindow->Render();
     renderWindowInteractor->Start();
-
+*/
 	return EXIT_SUCCESS;
 }

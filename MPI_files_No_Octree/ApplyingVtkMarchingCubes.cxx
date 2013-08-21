@@ -62,6 +62,7 @@
 #include "/work2/vt-system-install/include/vampirtrace/vt_user.h"
 #include <mpi.h>
 #include <stdio.h>
+#include <math.h>
 
 /* holds search results for the vtk file */
 std::vector<std::string> results;
@@ -115,20 +116,20 @@ int main(int argc, char *argv[])
     // Figure out the rank of this processor
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    /* This is for the temporary file names created. It contains the number 
-       of characters in the temporary filename "ShrimpChowFun#.vtk" */
-    int NumOfCharPD = 18;
-
-    // figure out how many characters are in the temporary file name, 
-    // i.e. "ShrimpChowFun128475.vtk"
-    if(rank >= 1)
-        NumOfCharPD += log10(rank);
+    int NumOfCharPD;
 
     char strPD[NumOfCharPD];
 
     // If not master process, do the vtkMarchingCubes implementation
     if (rank >= 1)
     {
+        /* This is for the temporary file names created. It contains the number 
+           of characters in the temporary filename "ShrimpChowFun#.vtk" */
+        NumOfCharPD = 18 + log10(rank);
+
+        // figure out how many characters are in the temporary file name, 
+        // i.e. "ShrimpChowFun128475.vtk"
+
         /* The vtk file extension we want to search for */
         std::string extension;
         extension = "vtk";
@@ -338,6 +339,8 @@ int main(int argc, char *argv[])
         // Receive all the temporary file names
         for(int i = 1; i < size; i++)
         {
+            NumOfCharPD = log10(i) + 18;
+
             MPI_Recv(strPD, NumOfCharPD, MPI_CHAR, i, 1, MPI_COMM_WORLD, &status);
         }
 
@@ -383,7 +386,7 @@ int main(int argc, char *argv[])
 
         VT_USER_END("Region 5");
         VT_OFF();
-
+/*
         // Remove any duplicate points.
         vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();
         cleanFilter->SetInputConnection(appendWriter->GetOutputPort());
@@ -410,6 +413,7 @@ int main(int argc, char *argv[])
         // Render and interact
         renderWindow->Render();
         renderWindowInteractor->Start();
+*/
     }
 
     MPI_Finalize();    
