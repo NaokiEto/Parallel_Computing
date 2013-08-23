@@ -308,7 +308,7 @@ int main(int argc, char *argv[])
 
     VT_USER_END("Region 5");
     VT_OFF();
-
+/*
     // Remove any duplicate points.
     vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();
     cleanFilter->SetInputConnection(triangleCellNormals->GetOutputPort());
@@ -337,6 +337,6 @@ int main(int argc, char *argv[])
     renderWindowInteractor->Start();
 
     //VT_USER_END("ApplyingVtkMarchingCubes");  
-
+*/
     return EXIT_SUCCESS;
 }

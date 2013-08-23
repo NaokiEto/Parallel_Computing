@@ -133,9 +133,9 @@ int main(int argc, char *argv[])
 
     // desired volume spacing
     double spacing[3];
-    spacing[0] = 0.5;
-    spacing[1] = 0.5;
-    spacing[2] = 0.5;
+    spacing[0] = 0.1;
+    spacing[1] = 0.1;
+    spacing[2] = 0.1;
     whiteImage->SetSpacing(spacing);
 
     /* compute dimensions */
@@ -149,9 +149,9 @@ int main(int argc, char *argv[])
 
     /* compute the origin */
     double origin[3];
-    origin[0] = bounds[0] + spacing[0] / 2;
-    origin[1] = bounds[2] + spacing[1] / 2;
-    origin[2] = bounds[4] + spacing[2] / 2;
+    origin[0] = bounds[0] - spacing[0] / 10;
+    origin[1] = bounds[2] - spacing[1] / 10;
+    origin[2] = bounds[4] - spacing[2] / 10;
     whiteImage->SetOrigin(origin);
 
     #if VTK_MAJOR_VERSION <= 5
@@ -308,7 +308,7 @@ int main(int argc, char *argv[])
 
     VT_USER_END("Region 5");
     VT_OFF();
-
+/*
     // Remove any duplicate points.
     vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();
     cleanFilter->SetInputConnection(triangleCellNormals->GetOutputPort());
@@ -337,6 +337,6 @@ int main(int argc, char *argv[])
     renderWindowInteractor->Start();
 
     //VT_USER_END("ApplyingVtkMarchingCubes");  
-
+*/
     return EXIT_SUCCESS;
 }

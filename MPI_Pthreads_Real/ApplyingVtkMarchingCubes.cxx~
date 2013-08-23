@@ -1,5 +1,3 @@
-#include <unistd.h>
-#include <iostream>
 #include <dirent.h>
 #include <vector>
 
@@ -13,7 +11,6 @@
 #include <vtkImageStencil.h>
 #include <vtkPointData.h>
 #include <string.h>
-#include <vtkPDataSetWriter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkExtractVOI.h>
 #include <vtkMarchingCubes.h>
@@ -30,9 +27,12 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkMPIController.h>
 
-#include <mpi.h>
+#include "/home/users/neto/NaokiEto/openmpi-install/include/mpi.h"
 #include <stdio.h>
 #include <pthread.h>
+#include "/home/users/neto/NaokiEto/vt-install/include/vampirtrace/vt_user.h"
+#include <time.h>
+#include <stdlib.h>
 
 // holds search results
 std::vector<std::string> results;
@@ -87,9 +87,15 @@ void* thread_function(void* ptr)
     int FuncThreadId = NewPtr->threadId;
     int FuncMpiRank = NewPtr->mpiRank;
 
+    //VT_ON();
+    //VT_USER_START("Region 2");
+
     vtkPolyDataReader *reader = vtkPolyDataReader::New();
     reader->SetFileName(NewPtr->VTKInput);
     reader->Update();
+
+    //VT_USER_END("Region 2");
+    //VT_OFF();
 
     vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    
 
@@ -207,28 +213,6 @@ void* thread_function(void* ptr)
     smoother->Update();
 
     vtkPolyData *smoothed_polys = smoother->GetOutput();
-    vtkDataArray *smoother_error= smoothed_polys->GetPointData()->GetScalars();
-
-    // Find min and max z
-    double *se_range= smoother_error->GetRange();
-
-    // print se_range
-    double minz= se_range[0]; // min(smoother_error)
-    double maxz= se_range[1]; // max(smoother_error)
-
-    if (maxz > 1)
-    {
-        printf("Big smoother error: min/max: %f, %f", minz, maxz);
-    }
-    minz= .3; // this way colours of different particles are comparable
-    maxz= 1;
-
-    // Create the color map
-    vtkLookupTable *colorLookupTable = vtkLookupTable::New();
-    colorLookupTable->SetTableRange(minz, maxz); // this does nothing, use mapper.SetScalarRange(minz, maxz)
-    colorLookupTable->SetHueRange(2/3.0, 1);
-
-    colorLookupTable->Build();
 
     // calc cell normal
     vtkPolyDataNormals *triangleCellNormals= vtkPolyDataNormals::New();
@@ -245,19 +229,6 @@ void* thread_function(void* ptr)
     triangleCellNormals->AutoOrientNormalsOn();
     triangleCellNormals->Update(); // creates vtkPolyData
 
-    vtkPolyDataMapper *mapper= vtkPolyDataMapper::New();
-
-    #if VTK_MAJOR_VERSION <= 5
-        mapper->SetInput(triangleCellNormals->GetOutput()); // this is better for vis;-)
-    #else
-        mapper->SetInputConnection(triangleCellNormals->GetOutputPort()); // this is better for vis;-)      
-    #endif
-
-    mapper->ScalarVisibilityOn(); // show colour 
-    mapper->SetScalarRange(minz, maxz);
-    mapper->SetScalarModeToUsePointData(); // the smoother error relates to the verts
-    mapper->SetLookupTable(colorLookupTable);
-
     #if VTK_MAJOR_VERSION <= 5
         NewPtr->vtkPiece = triangleCellNormals->GetOutput();
     #else
@@ -267,25 +238,11 @@ void* thread_function(void* ptr)
 
 int main(int argc, char *argv[])
 {
-    int i;
-
-    int pthreads_size = atoi(argv[1]);
-
-    // for the joining of threads later on
-    void* exit_status;
-
-    // The file extension to look for is vtk
-    std::string extension;
-    extension = "vtk";
-
-	// setup search parameters
-	std::string curr_directory = get_current_dir_name();
-
-	search(curr_directory, extension);
-
-    std::string result = results[0];
+    //VT_ON();
 
     vtkMPIController* controller = vtkMPIController::New();
+
+    double t1 = MPI_Wtime();
 
     // Initializing MPI
     controller->Initialize(&argc, &argv);
@@ -299,23 +256,39 @@ int main(int argc, char *argv[])
     /* The master process will be of rank 0 */
     int MASTER = 0;
 
+    int i;
+
+    int pthreads_size = atoi(argv[1]);
+
+    // for the joining of threads later on
+    void* exit_status;
+
+
 	pthread_t threads[pthreads_size];
 
     // this is the input into the function for each thread
     params thread_data_array[pthreads_size];
 
-	/* Validity checking for minimum number of processors */
-	if (MPI_size < 2) 
-        {
-		printf("Invalid Number of Processors ..... \n");
-		printf("Numprocs must be greater than 1 ......\n");
-		MPI_Finalize();
-		exit(0);
-	 }
+    //VT_OFF();
 
     // If not master process, do the vtkMarchingCubes implementation
     if (MPI_rank >= 1)
     {
+        //VT_ON();
+        //VT_USER_START("START");
+
+        // The file extension to look for is vtk
+        std::string extension;
+        extension = "vtk";
+
+	    // setup search parameters
+	    std::string curr_directory = get_current_dir_name();
+	    search(curr_directory, extension);
+        std::string result = results[0];
+
+        //VT_USER_END("START");
+        //VT_OFF();
+
 	    for (i = 0; i < pthreads_size; i++) {      
             //creating threads
             thread_data_array[i].mpiRank = MPI_rank;
@@ -358,6 +331,9 @@ int main(int argc, char *argv[])
 
     if (MPI_rank == MASTER)
     {
+        VT_ON();
+        VT_USER_START("FINISH");
+
         // to append each piece into 1 big vtk file
         vtkAppendPolyData *appendWriterMASTER = vtkAppendPolyData::New();
 
@@ -387,6 +363,26 @@ int main(int argc, char *argv[])
 
         pWriter->Write();
 
+        VT_USER_END("FINISH");
+        VT_OFF();
+
+        double t2 = MPI_Wtime();
+
+        double time = t2 - t1;
+
+        printf("MPI_Wtime measured the time elapsed to be: %f\n", time);
+/*
+        FILE *out_file = fopen("../OutPutFile.txt", "a"); // write only 
+
+        char strPD[6];
+
+        sprintf(strPD, "%f \n", time);
+
+        fprintf(out_file, strPD);
+        fclose(out_file);
+*/
+
+/*
         // Remove any duplicate points.
         vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();
         cleanFilter->SetInputConnection(appendWriterMASTER->GetOutputPort());
