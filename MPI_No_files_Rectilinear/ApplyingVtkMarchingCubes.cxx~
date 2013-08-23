@@ -65,7 +65,6 @@
 
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
-#include <vtkXMLUnstructuredGridReader.h>
 #include <vtkCellArray.h>
 #include <vtkDataSetSurfaceFilter.h>
 #include <vtkPointSource.h>
@@ -85,57 +84,49 @@
 
 #include <time.h>
 
-// holds search results
-std::vector<std::string> results;
-
-/**
-* This recursive search algorithm function will be used later to find the vtk 
-* file in the directory. The user is to place the vtk file in the build 
-* directory, and this function will find it and output it.
-*/
-void search(std::string curr_directory, std::string extension){
-	DIR* dir_point = opendir(curr_directory.c_str());
-	dirent* entry = readdir(dir_point);
-
-	while (entry){
-	    // filename
-		std::string fname = entry->d_name;
-		// if filename's last characters are extension
-		if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
-            // add filename to results vector
-			results.push_back(fname);
-
-		entry = readdir(dir_point);
-	}
-	return;
-}
-
-void process(int procRank, int procSize, vtkMPIController* procController)
+void process(int procRank, int procSize, vtkMPIController* procController, std::string fp)
 {
     /* The vtk file extension we want to search for */
-    std::string extension;
-    extension = (char) (procRank-1) + ".vtk";
 
     VT_ON();
     VT_USER_START("Region 1");
 
-    // setup search parameters
-    std::string curr_directory = get_current_dir_name();
-    search(curr_directory, extension);
-    std::string result = results[0];
+    int NumOfCharPD = strlen(fp.c_str()) + 5;
+    int original = strlen(fp.c_str()) + 5
+
+    // figure out how many characters are in the temporary file name, 
+    // i.e. "ShrimpChowFun128475.vtk"
+    if(procRank - 1 > 0)
+        NumOfCharPD += (int) log10(procRank - 1);
+
+    char buf[(int) NumOfCharPD - original + 1];
+ 
+    sprintf(buf, "%d", procRank-1);
+
+    const char* suffix = ".vtk";
+
+    const char* prefix = fp.c_str();
+
+    char prefix_suffix[NumOfCharPD];
+
+    strcpy(prefix_suffix, prefix);
+
+    strcat(prefix_suffix, buf);
+
+    strcat(prefix_suffix, suffix);
 
     VT_USER_END("Region 1");
     VT_OFF();
 
-    /* This is where the vtk file name result is */
-    const char * c = result.c_str();
+    printf(prefix_suffix);
+    printf("\n");
 
     VT_ON();
     VT_USER_START("Region 2");
 
     vtkRectilinearGridReader *reader = vtkRectilinearGridReader::New();
 
-    reader->SetFileName(c);
+    reader->SetFileName(prefix_suffix);
     reader->Update();
 
     // Create a grid
@@ -341,11 +332,10 @@ int main(int argc, char *argv[])
     // If not master process, do the vtkMarchingCubes implementation
     if (rank != 0)
     {
-        process(rank, size, controller);
+        std::string fileprefix = argv[2];
+        process(rank, size, controller, fileprefix);
     }
-/*
 
-*/
     // Master
     else
     {   

@@ -69,8 +69,6 @@ vtkSmartPointer.h
 -
 vtkPolyData.h
 -
-vtkXMLUnstructuredGridReader.h
--
 vtkCellArray.h
 -
 vtkDataSetSurfaceFilter.h
@@ -747,22 +745,6 @@ vtkPolyDataAlgorithm.h
 /work2/VTK5.10.1-install/include/vtk-5.10/vtkWriter.h
 vtkAlgorithm.h
 /work2/VTK5.10.1-install/include/vtk-5.10/vtkAlgorithm.h
-
-/work2/VTK5.10.1-install/include/vtk-5.10/vtkXMLDataReader.h
-vtkXMLReader.h
-/work2/VTK5.10.1-install/include/vtk-5.10/vtkXMLReader.h
-
-/work2/VTK5.10.1-install/include/vtk-5.10/vtkXMLReader.h
-vtkAlgorithm.h
-/work2/VTK5.10.1-install/include/vtk-5.10/vtkAlgorithm.h
-
-/work2/VTK5.10.1-install/include/vtk-5.10/vtkXMLUnstructuredDataReader.h
-vtkXMLDataReader.h
-/work2/VTK5.10.1-install/include/vtk-5.10/vtkXMLDataReader.h
-
-/work2/VTK5.10.1-install/include/vtk-5.10/vtkXMLUnstructuredGridReader.h
-vtkXMLUnstructuredDataReader.h
-/work2/VTK5.10.1-install/include/vtk-5.10/vtkXMLUnstructuredDataReader.h
 
 /work2/VTK5.10.1-install/include/vtk-5.10/vtksys/DateStamp.h
 

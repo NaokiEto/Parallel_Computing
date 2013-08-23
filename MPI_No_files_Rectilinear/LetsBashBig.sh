@@ -10,8 +10,11 @@ NUMCHILD=$(($NUMPROCESSES-1))
 # File name of VTK produced
 FILENAMEVTK=$2
 
+# Prefix of filenames
+PREFIX=$3
+
 # Number of times the program is to be ran
-NUMREPETITIONS=$3
+NUMREPETITIONS=$4
 
 # Just parts of file names
 MPI="BIG_MPI_NO_FILES"
@@ -41,7 +44,7 @@ for i in `seq 1 $NUMREPETITIONS`;
         cd $NUMCHILD$MPI/$MPI$NUMCHILD$TRIAL$ZERO$i
 
         # Run the code 
-        mpirun -np "$NUMPROCESSES" ./../../build/ApplyingVtkMarchingCubes "$FILENAMEVTK"
+        mpirun -np "$NUMPROCESSES" ./../../build/ApplyingVtkMarchingCubes "$FILENAMEVTK" "$PREFIX"
 
         # Remove the original vtk file
         rm $f
