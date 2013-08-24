@@ -65,6 +65,10 @@ stdio.h
 -
 pthread.h
 -
+time.h
+-
+stdlib.h
+-
 vtkSmartPointer.h
 -
 vtkPolyData.h

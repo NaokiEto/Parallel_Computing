@@ -63,6 +63,8 @@
 #include "/work2/vt-system-install/include/vampirtrace/vt_user.h"
 #include <stdio.h>
 #include <pthread.h>
+#include <time.h>
+#include <stdlib.h>
 
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
@@ -85,35 +87,10 @@
 
 //#include "/work/naoki/openmpi-1.6.5/ompi/contrib/vt/vt/vtlib/vt_pthreadreg.h"
 
-// holds search results
-std::string result;
-
 /**
-* This recursive search algorithm function will be used later to find the vtk 
-* file in the directory. The user is to place the vtk file in the build 
-* directory, and this function will find it and output it.
-*/
-void search(std::string curr_directory, std::string extension){
-	DIR* dir_point = opendir(curr_directory.c_str());
-	dirent* entry = readdir(dir_point);
-
-	while (entry){
-	    // filename
-		std::string fname = entry->d_name;
-		// if filename's last characters are extension
-		if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
-            // add filename to results vector
-			result = fname;
-
-		entry = readdir(dir_point);
-	}
-	return;
-}
-
-/**
- * This struct contains the id of the thread, the filename of the vtk file 
- * that was found, and the number of total threads. This will be useful
- * for determining the bounds in the vtk data for each particular thread.
+ * This struct contains the id of the thread and the unique filename of the 
+ * vtk file that was found. This will be useful for determining the bounds 
+ * in the vtk data for each particular thread.
 */
 typedef struct Param_Function
 {
@@ -136,12 +113,42 @@ void* thread_function(void* ptr)
     params* NewPtr;
     NewPtr = (params*) ptr;
 
+    VT_ON();
+    VT_USER_START("Region 1");
+
+    int NumOfCharPD = strlen(NewPtr->VTKinput) + 5 + 1;
+    int original = NumOfCharPD;
+
+    // figure out how many characters are in the temporary file name, 
+    if(NewPtr->threadId > 9)
+        NumOfCharPD += (int) log10(NewPtr->threadId);
+
+    char buf[(int) NumOfCharPD - original + 1];
+
+    sprintf(buf, "%d", NewPtr->threadId);
+
+    const char* suffix = ".vtk";
+
+    const char* prefix = NewPtr->VTKinput;
+
+    char prefix_suffix[NumOfCharPD];
+
+    strcpy(prefix_suffix, prefix);
+
+    strcat(prefix_suffix, buf);
+
+    strcat(prefix_suffix, suffix);
+
+    VT_USER_END("Region 1");
+    VT_OFF();
+
     vtkRectilinearGridReader *reader = vtkRectilinearGridReader::New();
 
     VT_ON();
     VT_USER_START("Region 2");
+    
+    reader->SetFileName(prefix_suffix);
 
-    reader->SetFileName(NewPtr->VTKinput);
     reader->Update();
 
     // Create a grid
@@ -274,7 +281,7 @@ void* thread_function(void* ptr)
     contour->SetInput( voi->GetOutput() );
 
     // choose one label
-    int index = 31;
+    int index = 131;
 
     contour->SetValue(0, index);
     contour->Update(); //needed for GetNumberOfPolys() !!!
@@ -315,14 +322,14 @@ void* thread_function(void* ptr)
 
     /* This is for the temporary file names created. It contains the number 
        of characters in the temporary filename "ShrimpChowFun#.vtk" */
-    int NumOfCharPD = 18;
+    int NumOfCharPD2 = 18;
 
     // figure out how many characters are in the temporary file name, 
     // i.e. "ShrimpChowFun128475.vtk"
     if(NewPtr->threadId > 0)
-        NumOfCharPD = 18 + (int) log10(NewPtr->threadId);
+        NumOfCharPD2 = 18 + (int) log10(NewPtr->threadId);
 
-    char strPD[NumOfCharPD];
+    char strPD[NumOfCharPD2];
 
     sprintf(strPD, "ShrimpChowFun%d.vtk", NewPtr->threadId);
 
@@ -347,6 +354,12 @@ void* thread_function(void* ptr)
  */
 int main(int argc, char *argv[])
 {
+    struct timespec t0,t1;
+
+    clock_gettime(CLOCK_REALTIME,&t0);
+
+    //pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+
     /* Number of threads */
     int size = atoi(argv[1]);
 
@@ -358,26 +371,13 @@ int main(int argc, char *argv[])
 	for (int f = 0; f < size; f++) {      
         // Creating threads
         // The file extension to look for is .f.vtk
-        std::string extension2;
-        extension2 = (char) f + ".vtk";
+        std::string fileprefix = argv[3];
 
-        VT_ON();
-        VT_USER_START("Region 1");
-
-	    // setup search parameters
-	    std::string curr_directory2 = get_current_dir_name();
-
-	    search(curr_directory2, extension2);
-
-        VT_USER_END("Region 1");
-        VT_OFF();
-
-        /* This is where the vtk file name result is */
-        const char * c = result.c_str();
-
-        thread_data_array[f].VTKinput = c;
+        thread_data_array[f].VTKinput = fileprefix.c_str();
         thread_data_array[f].threadId = f;
+        //pthread_mutex_lock(&lock);
 		pthread_create(&threads[f], NULL, thread_function, (void*)&thread_data_array[f]);
+        //pthread_mutex_unlock(&lock);
 	}
 
     // Joining threads to make sure all threads are terminated
@@ -438,6 +438,12 @@ int main(int argc, char *argv[])
 
     VT_USER_END("Region 5");
     VT_OFF();
+
+    clock_gettime(CLOCK_REALTIME,&t1);
+
+    double dt = (double) (t1.tv_sec - t0.tv_sec) + (double) (t1.tv_nsec - t0.tv_nsec) / 1.0e9;
+
+    printf("The measured time elapsed to be: %f\n", dt);
 /*
     // Remove any duplicate points.
     vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();

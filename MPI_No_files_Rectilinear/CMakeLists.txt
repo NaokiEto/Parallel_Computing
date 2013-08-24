@@ -16,7 +16,7 @@ include(${VTK_USE_FILE})
 
 add_executable(ApplyingVtkMarchingCubes ApplyingVtkMarchingCubes.cxx)
 
-SET(CMAKE_C_COMPILER mpicc-vt)
+SET(CMAKE_C_COMPILER mpicc)
 
 SET(CMAKE_CXX_COMPILER mpicxx)
 

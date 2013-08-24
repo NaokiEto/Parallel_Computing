@@ -62,6 +62,7 @@
 #include <mpi.h>//"/home/users/neto/mpich2-1.4.1p1-install/include/mpi.h"
 #include <stdio.h>
 #include "/work2/vt-system-install/include/vampirtrace/vt_user.h"
+#include <stdlib.h>
 
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
@@ -84,19 +85,18 @@
 
 #include <time.h>
 
-void process(int procRank, int procSize, vtkMPIController* procController, std::string fp)
+void process(int procRank, int procSize, vtkMPIController* procController, const char* fp)
 {
     /* The vtk file extension we want to search for */
 
     VT_ON();
     VT_USER_START("Region 1");
 
-    int NumOfCharPD = strlen(fp.c_str()) + 5;
+    int NumOfCharPD = strlen(fp) + 5 + 1;
     int original = NumOfCharPD;
 
     // figure out how many characters are in the temporary file name, 
-    // i.e. "ShrimpChowFun128475.vtk"
-    if(procRank - 1 > 0)
+    if(procRank - 1 > 9)
         NumOfCharPD += (int) log10(procRank - 1);
 
     char buf[(int) NumOfCharPD - original + 1];
@@ -105,7 +105,7 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
 
     const char* suffix = ".vtk";
 
-    const char* prefix = fp.c_str();
+    const char* prefix = fp;
 
     char prefix_suffix[NumOfCharPD];
 
@@ -117,9 +117,6 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
 
     VT_USER_END("Region 1");
     VT_OFF();
-
-    printf(prefix_suffix);
-    printf("\n");
 
     VT_ON();
     VT_USER_START("Region 2");
@@ -166,8 +163,6 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
 
     polydata->GetBounds(bounds);
 
-    int pointsNum = polydata->GetNumberOfPoints();
-
     /* desired volume spacing */
     double spacing[3];
     spacing[0] = 0.1;
@@ -182,9 +177,9 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
     vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
 
     #if VTK_MAJOR_VERSION <= 5
-       pol2stenc->SetInput(surfaceFilter->GetOutput());
+        pol2stenc->SetInput(surfaceFilter->GetOutput());
     #else
-      pol2stenc->SetInputData(surfaceFilter->GetOutput());
+        pol2stenc->SetInputData(surfaceFilter->GetOutput());
     #endif
 
     pol2stenc->SetOutputSpacing(spacing);
@@ -200,12 +195,12 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
 
     /* compute the origin */
     double origin[3];
-    for (int i = 0; i < 3; i++)
+    for (int t = 0; t < 3; t++)
     {
-        if (bounds[2*i] < 0)
-            origin[i] = bounds[2*i] - spacing[i]/10;
+        if (bounds[2*t] < 0)
+            origin[t] = bounds[2*t] - spacing[t]/10;
         else
-            origin[i] = bounds[2*i] + spacing[i]/10;
+            origin[t] = bounds[2*t] + spacing[t]/10;
     }
 
     whiteImage->SetOrigin(origin);
@@ -214,21 +209,21 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
         whiteImage->SetScalarTypeToUnsignedChar();
         whiteImage->AllocateScalars();
     #else
-       whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
+        whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
     #endif
 
     // fill the image with foreground voxels:
     unsigned char inval = 255;
     unsigned char outval = 0;
     vtkIdType count = whiteImage->GetNumberOfPoints();
-    for (vtkIdType i = 0; i < count; ++i)
+    for (vtkIdType s = 0; s < count; ++s)
     {
-        whiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
+        whiteImage->GetPointData()->GetScalars()->SetTuple1(s, inval);
     }
 
     pol2stenc->SetOutputOrigin(origin);
     pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-    //pol2stenc->Update();
+    pol2stenc->Update();
 
     #if VTK_MAJOR_VERSION <= 5
         imgstenc->SetInput(whiteImage);
@@ -240,6 +235,7 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
 
     imgstenc->ReverseStencilOff();
     imgstenc->SetBackgroundValue(outval);
+    imgstenc->Update();
 
     VT_USER_END("Region 3");
     VT_OFF();
@@ -249,6 +245,7 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
     voi->SetInput(imgstenc->GetOutput());  
     voi->SetSampleRate(1,1,1);
 
+    voi->Update();
 
     VT_ON();
     VT_USER_START("Region 4");
@@ -259,7 +256,7 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
     contour->SetInput( voi->GetOutput() );
 
     // choose one label
-    int index = 131 + procRank;
+    int index = 131;
 
     contour->SetValue(0, index);
     contour->Update(); //needed for GetNumberOfPolys() !!!
@@ -295,8 +292,6 @@ void process(int procRank, int procSize, vtkMPIController* procController, std::
     triangleCellNormals->AutoOrientNormalsOn();
     triangleCellNormals->Update(); // creates vtkPolyData
 
-    int after = triangleCellNormals->GetOutput()->GetNumberOfPoints();
-
     // send the vtkPolyData to the master process
     #if VTK_MAJOR_VERSION <= 5
         procController->Send(triangleCellNormals->GetOutput(), 0, 101);
@@ -320,6 +315,8 @@ int main(int argc, char *argv[])
 {
     vtkMPIController* controller = vtkMPIController::New();
 
+    double t1 = MPI_Wtime();
+
     // Initializing MPI
     controller->Initialize(&argc, &argv);
 
@@ -332,8 +329,8 @@ int main(int argc, char *argv[])
     // If not master process, do the vtkMarchingCubes implementation
     if (rank != 0)
     {
-        std::string fileprefix = argv[2];
-        process(rank, size, controller, fileprefix);
+        const char* prefix = argv[2];
+        process(rank, size, controller, prefix);
     }
 
     // Master
@@ -374,6 +371,21 @@ int main(int argc, char *argv[])
 
         VT_USER_END("Region 5");
         VT_OFF();
+
+        double t2 = MPI_Wtime();
+
+        double time = t2 - t1;
+
+        printf("MPI_Wtime measured the time elapsed to be: %f\n", time);
+
+        FILE *out_file = fopen("../OutPutFile.txt", "a"); // write only 
+
+        char strPD[6];
+
+        sprintf(strPD, "%f \n", time);
+
+        fprintf(out_file, strPD);
+        fclose(out_file);
 /*
         // Remove any duplicate points.
         vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();

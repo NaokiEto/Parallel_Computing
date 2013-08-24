@@ -65,6 +65,8 @@ stdio.h
 -
 /work2/vt-system-install/include/vampirtrace/vt_user.h
 -
+stdlib.h
+-
 vtkSmartPointer.h
 -
 vtkPolyData.h
