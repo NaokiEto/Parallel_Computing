@@ -58,6 +58,11 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkMPIController.h>
+#include <vtkCellData.h>
+#include <vtkImageData.h>
+#include <vtkPointData.h>
+#include <vtkDecimatePro.h>
+#include <vtkSmoothPolyDataFilter.h>
 
 #include <mpi.h>//"/home/users/neto/mpich2-1.4.1p1-install/include/mpi.h"
 #include <stdio.h>
@@ -82,6 +87,11 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkMath.h>
 #include <vtkDoubleArray.h>
+#include <vtkContourFilter.h>
+#include <vtkRectilinearGridGeometryFilter.h>
+#include <vtkDataSetMapper.h>
+#include <vtkPoints.h>
+#include <algorithm> 
 
 #include <time.h>
 
@@ -129,153 +139,69 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
     // Create a grid
     vtkSmartPointer<vtkRectilinearGrid> grid = reader->GetOutput();
 
-    vtkSmartPointer<vtkRectilinearGridToTetrahedra> rectilinearGridToTetrahedra =
-    vtkSmartPointer<vtkRectilinearGridToTetrahedra>::New();
-    #if VTK_MAJOR_VERSION <= 5
-        rectilinearGridToTetrahedra->SetInputConnection(grid->GetProducerPort());
-    #else
-        rectilinearGridToTetrahedra->SetInputData(grid);
-    #endif
-        rectilinearGridToTetrahedra->Update();
+    //vtkPoints *pts = vtkPoints::New();
 
-    vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter = vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+    //grid->GetPoints(pnts);
 
-    // Poly Data
-    #if VTK_MAJOR_VERSION <= 5
-        surfaceFilter->SetInputConnection(rectilinearGridToTetrahedra->GetOutputPort());
-    #else
-        surfaceFilter->SetInputData(rectilinearGridToTetrahedra->GetOutput());
-    #endif
-    surfaceFilter->Update(); 
+    //pts = grid->GetPoints();
 
-    VT_USER_END("Region 2");
-    VT_OFF();
+    //int coordDataType = VTK_FLOAT;
 
-    vtkSmartPointer<vtkImageData> whiteImage = vtkSmartPointer<vtkImageData>::New();    
+    vtkDataArray* dim;
 
-    VT_ON();
-    VT_USER_START("Region 3");     
+    vtkFieldData* field_data = vtkFieldData::New();
 
-    vtkPolyData* polydata = surfaceFilter->GetOutput();
+    //field_data = grid->GetFieldData();
 
-     /* compute bounds */ 
-    double bounds[6];
+    vtkPointData* pointdata = grid->GetPointData();
 
-    polydata->GetBounds(bounds);
+    double* range;
 
-    /* desired volume spacing */
-    double spacing[3];
-    spacing[0] = 0.1;
-    spacing[1] = 0.1;
-    spacing[2] = 0.1;
-    whiteImage->SetSpacing(spacing);
+    //pointdata->GetVectors()->GetRange(range);
 
-    // cut the corresponding white image and set the background:
-    vtkSmartPointer<vtkImageStencil> imgstenc = vtkSmartPointer<vtkImageStencil>::New();
+    pointdata->GetArray("grad")->GetRange(range);
 
-    // polygonal data --> image stencil:
-    vtkSmartPointer<vtkPolyDataToImageStencil> pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
+/*
+    printf("The range is %f, %f \n", range[0], range[1]);
 
-    #if VTK_MAJOR_VERSION <= 5
-        pol2stenc->SetInput(surfaceFilter->GetOutput());
-    #else
-        pol2stenc->SetInputData(surfaceFilter->GetOutput());
-    #endif
+    const char* arrName = pointdata->GetVectors()->GetName();
 
-    pol2stenc->SetOutputSpacing(spacing);
+    printf(arrName);
+    printf("^^^^^^^^^^^^^^^^\n");
 
-    /* compute dimensions */
-    int dim[3];
-    for (int i = 0; i < 3; i++)
-    {
-        dim[i] = static_cast<int>(ceil((bounds[i * 2 + 1] - bounds[i * 2]) / spacing[i]));
-    }
-    whiteImage->SetDimensions(dim);
-    whiteImage->SetExtent(0, dim[0] - 1, 0, dim[1] - 1, 0, dim[2] - 1);
+    int Nx = grid->GetXCoordinates()->GetNumberOfTuples();
+    int Ny = grid->GetYCoordinates()->GetNumberOfTuples();
+    int Nz = grid->GetZCoordinates()->GetNumberOfTuples();
 
-    /* compute the origin */
-    double origin[3];
-    for (int t = 0; t < 3; t++)
-    {
-        if (bounds[2*t] < 0)
-            origin[t] = bounds[2*t] - spacing[t]/10;
-        else
-            origin[t] = bounds[2*t] + spacing[t]/10;
-    }
+    printf("the extents are %d, %d, %d", Nx, Ny, Nz);
 
-    whiteImage->SetOrigin(origin);
+    vtkRectilinearGridGeometryFilter* top = vtkRectilinearGridGeometryFilter::New();
+    top->SetInput(grid);
+    top->SetExtent(0, Nx-1, 0, Ny-1, 0, Nz-1);
+*/
+    vtkContourFilter* contour = vtkContourFilter::New();
 
-    #if VTK_MAJOR_VERSION <= 5
-        whiteImage->SetScalarTypeToUnsignedChar();
-        whiteImage->AllocateScalars();
-    #else
-        whiteImage->AllocateScalars(VTK_UNSIGNED_CHAR,1);
-    #endif
+    // using setinputconnection and getoutputport is better
 
-    // fill the image with foreground voxels:
-    unsigned char inval = 255;
-    unsigned char outval = 0;
-    vtkIdType count = whiteImage->GetNumberOfPoints();
-    for (vtkIdType s = 0; s < count; ++s)
-    {
-        whiteImage->GetPointData()->GetScalars()->SetTuple1(s, inval);
-    }
+    contour->SetInputArrayToProcess(0, 0, 0, vtkDataObject::FIELD_ASSOCIATION_POINTS, "grad");
 
-    pol2stenc->SetOutputOrigin(origin);
-    pol2stenc->SetOutputWholeExtent(whiteImage->GetExtent());
-    pol2stenc->Update();
+    //contour->SetInputConnection(MyPolyData->GetProducerPort());
 
-    #if VTK_MAJOR_VERSION <= 5
-        imgstenc->SetInput(whiteImage);
-        imgstenc->SetStencil(pol2stenc->GetOutput());
-    #else
-        imgstenc->SetInputData(whiteImage);
-        imgstenc->SetStencilConnection(pol2stenc->GetOutputPort());
-    #endif
+    contour->SetInput(grid);
 
-    imgstenc->ReverseStencilOff();
-    imgstenc->SetBackgroundValue(outval);
-    imgstenc->Update();
+    //contour->SetInputConnection(top->GetOutputPort());
 
-    VT_USER_END("Region 3");
-    VT_OFF();
+    contour->GenerateValues(50, range);
 
-    // Pass the meta image data to the vtkMarchingCubes
-    vtkExtractVOI *voi = vtkExtractVOI::New(); 
-    voi->SetInput(imgstenc->GetOutput());  
-    voi->SetSampleRate(1,1,1);
+    contour->ComputeNormalsOn();
 
-    voi->Update();
+    contour->Update();
 
-    VT_ON();
-    VT_USER_START("Region 4");
+    vtkPolyData *smoothed_polys = contour->GetOutput();
 
-    //Prepare surface generation
-    vtkMarchingCubes *contour = vtkMarchingCubes::New(); //for label images
+    int polNum = smoothed_polys->GetNumberOfPoints();
 
-    contour->SetInput( voi->GetOutput() );
-
-    // choose one label
-    int index = 131;
-
-    contour->SetValue(0, index);
-    contour->Update(); //needed for GetNumberOfPolys() !!!
-
-    vtkWindowedSincPolyDataFilter *smoother= vtkWindowedSincPolyDataFilter::New();
-
-    #if VTK_MAJOR_VERSION <= 5
-        smoother->SetInput(contour->GetOutput());
-    #else
-        smoother->SetInputConnection(contour->GetOutputPort());   
-    #endif
-
-    smoother->SetNumberOfIterations(30); // this has little effect on the error!
-    smoother->NonManifoldSmoothingOn();
-    smoother->NormalizeCoordinatesOn();
-    smoother->GenerateErrorScalarsOn();
-    smoother->Update();
-
-    vtkPolyData *smoothed_polys = smoother->GetOutput();
+    printf("the number of points after contour is %d \n", polNum);
 
     // calc cell normal
     vtkPolyDataNormals *triangleCellNormals= vtkPolyDataNormals::New();
@@ -292,12 +218,34 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
     triangleCellNormals->AutoOrientNormalsOn();
     triangleCellNormals->Update(); // creates vtkPolyData
 
+    printf(" so it never fails, just quits?\n");
+
     // send the vtkPolyData to the master process
     #if VTK_MAJOR_VERSION <= 5
         procController->Send(triangleCellNormals->GetOutput(), 0, 101);
     #else
         procController->Send(triangleCellNormals->GetOutputPort(), 0, 101);  
     #endif
+
+    vtkPolyDataMapper* contourMapper = vtkPolyDataMapper::New();
+    contourMapper->SetInput(triangleCellNormals->GetOutput());
+
+     vtkActor* contourActor = vtkActor::New();
+     contourActor->SetMapper(contourMapper);
+
+    // Create a renderer, render window, and interactor
+    vtkRenderer* renderer = vtkRenderer::New();
+    vtkRenderWindow *renderWindow = vtkRenderWindow::New();
+    vtkRenderWindowInteractor *renderWindowInteractor = vtkRenderWindowInteractor::New();
+
+    // Add the actors to the scene
+    renderWindow->AddRenderer(renderer);
+    renderWindowInteractor->SetRenderWindow(renderWindow);
+    renderer->AddActor(contourActor);
+
+    // Render and interact
+    renderWindow->Render();
+    renderWindowInteractor->Start();
 
     VT_USER_END("Region 4");
     VT_OFF();
@@ -384,36 +332,8 @@ int main(int argc, char *argv[])
 
         sprintf(strPD, "%f \n", time);
 
-        fprintf(out_file, strPD);
+        fputs(strPD, out_file);
         fclose(out_file);
-/*
-        // Remove any duplicate points.
-        vtkCleanPolyData *cleanFilter = vtkCleanPolyData::New();
-        cleanFilter->SetInputConnection(appendWriter->GetOutputPort());
-        cleanFilter->Update();
-
-        // Create a mapper
-        vtkPolyDataMapper *cumulativeMapper = vtkPolyDataMapper::New();
-        cumulativeMapper->SetInputConnection(cleanFilter->GetOutputPort());
-
-        // Create an actor
-        vtkActor *actor = vtkActor::New();
-        actor->SetMapper(cumulativeMapper);
-
-        // Create a renderer, render window, and interactor
-        vtkRenderer* renderer = vtkRenderer::New();
-        vtkRenderWindow *renderWindow = vtkRenderWindow::New();
-        vtkRenderWindowInteractor *renderWindowInteractor = vtkRenderWindowInteractor::New();
-
-        // Add the actors to the scene
-        renderWindow->AddRenderer(renderer);
-        renderWindowInteractor->SetRenderWindow(renderWindow);
-        renderer->AddActor(actor);
-
-        // Render and interact
-        renderWindow->Render();
-        renderWindowInteractor->Start();
-*/
     }
 
     controller->Finalize(); 
