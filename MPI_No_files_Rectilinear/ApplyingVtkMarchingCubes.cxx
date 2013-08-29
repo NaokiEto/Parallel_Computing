@@ -139,58 +139,23 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
     // Create a grid
     vtkSmartPointer<vtkRectilinearGrid> grid = reader->GetOutput();
 
-    //vtkPoints *pts = vtkPoints::New();
-
-    //grid->GetPoints(pnts);
-
-    //pts = grid->GetPoints();
-
-    //int coordDataType = VTK_FLOAT;
-
     vtkDataArray* dim;
-
-    vtkFieldData* field_data = vtkFieldData::New();
-
-    //field_data = grid->GetFieldData();
 
     vtkPointData* pointdata = grid->GetPointData();
 
     double* range;
 
-    //pointdata->GetVectors()->GetRange(range);
-
     pointdata->GetArray("grad")->GetRange(range);
 
-/*
-    printf("The range is %f, %f \n", range[0], range[1]);
-
-    const char* arrName = pointdata->GetVectors()->GetName();
-
-    printf(arrName);
-    printf("^^^^^^^^^^^^^^^^\n");
-
-    int Nx = grid->GetXCoordinates()->GetNumberOfTuples();
-    int Ny = grid->GetYCoordinates()->GetNumberOfTuples();
-    int Nz = grid->GetZCoordinates()->GetNumberOfTuples();
-
-    printf("the extents are %d, %d, %d", Nx, Ny, Nz);
-
-    vtkRectilinearGridGeometryFilter* top = vtkRectilinearGridGeometryFilter::New();
-    top->SetInput(grid);
-    top->SetExtent(0, Nx-1, 0, Ny-1, 0, Nz-1);
-*/
     vtkContourFilter* contour = vtkContourFilter::New();
 
-    // using setinputconnection and getoutputport is better
-
+    // name of array is "grad"
     contour->SetInputArrayToProcess(0, 0, 0, vtkDataObject::FIELD_ASSOCIATION_POINTS, "grad");
 
-    //contour->SetInputConnection(MyPolyData->GetProducerPort());
+    // better than setinput
+    contour->SetInputConnection(grid->GetProducerPort());
 
-    contour->SetInput(grid);
-
-    //contour->SetInputConnection(top->GetOutputPort());
-
+    // woo 50 contours
     contour->GenerateValues(50, range);
 
     contour->ComputeNormalsOn();
@@ -198,10 +163,6 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
     contour->Update();
 
     vtkPolyData *smoothed_polys = contour->GetOutput();
-
-    int polNum = smoothed_polys->GetNumberOfPoints();
-
-    printf("the number of points after contour is %d \n", polNum);
 
     // calc cell normal
     vtkPolyDataNormals *triangleCellNormals= vtkPolyDataNormals::New();
@@ -217,8 +178,6 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
     triangleCellNormals->ConsistencyOn();
     triangleCellNormals->AutoOrientNormalsOn();
     triangleCellNormals->Update(); // creates vtkPolyData
-
-    printf(" so it never fails, just quits?\n");
 
     // send the vtkPolyData to the master process
     #if VTK_MAJOR_VERSION <= 5
