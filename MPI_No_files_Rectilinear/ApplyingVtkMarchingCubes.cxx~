@@ -168,7 +168,7 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
     vtkPolyDataNormals *triangleCellNormals= vtkPolyDataNormals::New();
 
     #if VTK_MAJOR_VERSION <= 5
-        triangleCellNormals->SetInput(smoothed_polys);
+        triangleCellNormals->SetInputConnection(contour->GetOutputPort());
     #else
         triangleCellNormals->SetInputData(smoothed_polys);   
     #endif
