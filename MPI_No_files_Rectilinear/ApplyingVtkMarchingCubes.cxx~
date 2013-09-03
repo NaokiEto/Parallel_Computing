@@ -99,8 +99,8 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
 {
     /* The vtk file extension we want to search for */
 
-    VT_ON();
-    VT_USER_START("Region 1");
+    //VT_ON();
+    //VT_USER_START("Region 1");
 
     int NumOfCharPD = strlen(fp) + 5 + 1;
     int original = NumOfCharPD;
@@ -125,11 +125,9 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
 
     strcat(prefix_suffix, suffix);
 
-    VT_USER_END("Region 1");
-    VT_OFF();
+    //VT_USER_END("Region 1");
+    //VT_OFF();
 
-    VT_ON();
-    VT_USER_START("Region 2");
 
     vtkRectilinearGridReader *reader = vtkRectilinearGridReader::New();
 
@@ -145,7 +143,7 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
 
     double* range;
 
-    pointdata->GetArray("grad")->GetRange(range);
+     pointdata->GetArray("grad")->GetRange(range);
 
     vtkContourFilter* contour = vtkContourFilter::New();
 
@@ -186,6 +184,10 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
         procController->Send(triangleCellNormals->GetOutputPort(), 0, 101);  
     #endif
 
+/*
+
+    //rendering functions
+
     vtkPolyDataMapper* contourMapper = vtkPolyDataMapper::New();
     contourMapper->SetInput(triangleCellNormals->GetOutput());
 
@@ -205,9 +207,7 @@ void process(int procRank, int procSize, vtkMPIController* procController, const
     // Render and interact
     renderWindow->Render();
     renderWindowInteractor->Start();
-
-    VT_USER_END("Region 4");
-    VT_OFF();
+*/
 }
 
 /**
@@ -246,13 +246,14 @@ int main(int argc, char *argv[])
         // to append each piece into 1 big vtk file
         vtkAppendPolyData *appendWriter = vtkAppendPolyData::New();
 
-        VT_ON();
-        VT_USER_START("Region 5");
+        //VT_ON();
+        //VT_USER_START("Region 5");
 
         // go through the processes, and append
         for(int k = 1; k < size; k++)
         {
             vtkPolyData* pd = vtkPolyData::New();
+            
             controller->Receive(pd, k, 101);
 
             #if VTK_MAJOR_VERSION <= 5
@@ -275,9 +276,6 @@ int main(int argc, char *argv[])
 
         // output vtk file
         pWriter->Write();
-
-        VT_USER_END("Region 5");
-        VT_OFF();
 
         double t2 = MPI_Wtime();
 
